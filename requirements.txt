@@ -1,4 +1,5 @@
 streamlit==1.37.0
+scikit-learn>=1.2.2
 joblib>=1.3.2
 gwosc==0.7.1
 gwpy==3.0.8
