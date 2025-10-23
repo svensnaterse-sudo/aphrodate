@@ -93,10 +93,9 @@ from sklearn.metrics import mean_absolute_error
 y_pred = knn_reg.predict(X_test_scaled)
 mean_absolute_error(y_test, y_pred)
 
-from joblib import dump, load
+from google.colab import files
 
-# Save the trained model and the scaler
-dump(knn_reg, "knn_model.joblib")
-dump(scaler, "scaler.joblib")
+files.download("knn_model.joblib")
+files.download("scaler.joblib")
 
 print("Model and scaler saved successfully!")
