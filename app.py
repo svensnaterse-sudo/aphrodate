@@ -76,7 +76,7 @@ def user_input_features():
 
     return pd.DataFrame([inputs])
 
-
+if st.sidebar.button("Predict Match"):
 input_df = user_input_features()
 
 # Ensure input features are in the same order as training
