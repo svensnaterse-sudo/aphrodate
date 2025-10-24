@@ -32,7 +32,8 @@ feature_columns = [
     "age", "attractive", "intelligence", "funny", "ambition", "ambtition_important", "art", "attractive_important", "clubbing", "concerts", "d_age", "dining", "exercise",
     "gaming", "gender_male", "hiking", "importance_same_race", "intellicence_important", "interests_correlate", "movies", "museums", "music", "race_Black/African American",
     "race_European/Caucasian-American", "race_Latino/Hispanic American", "race_Other", "race_o_Asian/Pacific Islander/Asian-American", "race_o_Black/African American",
-    "race_o_European/Caucasian-American", "race_o_Latino/Hispanic American", "race_o_Other", "reading", "samerace", "shared_interests_partner"
+    "race_o_European/Caucasian-American", "race_o_Latino/Hispanic American", "race_o_Other", "reading", "samerace", "shared_interests_partner", "shopping", "sports",
+    "theater", "tv", "tvsports"
     
     # Add more features if your dataset has them
 ]
