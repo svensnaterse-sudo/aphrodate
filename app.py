@@ -61,7 +61,7 @@ def user_input_features():
     feature_ranges = {
         "age": (18, 50, 25),           # min, max, default
         "d_age": (0, 30, 5),
-        "samerace":(0, 1)
+        "samerace":(0, 1, 0)
     }
 
     # Remaining features
