@@ -5,13 +5,16 @@ import numpy as np
 from joblib import load
 import matplotlib.pyplot as plt
 
-
+# ----------------------------
+# Page config
+# ----------------------------
 st.set_page_config(page_title="Aphrodate", page_icon="💘")
 st.title("💘 Aphrodate")
-st.markdown("""
-Adjust the sliders in the sidebar to set input features, then see your predicted match probability.
-""")
+st.markdown("Adjust the sliders in the sidebar to set input features, then see the closest matches.")
 
+# ----------------------------
+# Load model, scaler, and training data
+# ----------------------------
 @st.cache_resource
 def load_model_and_data():
     knn_model = load("knn_model.joblib")
@@ -22,74 +25,65 @@ def load_model_and_data():
 
 knn_model, scaler, X_train, y_train = load_model_and_data()
 
+# ----------------------------
+# Feature columns (same as training)
+# ----------------------------
+feature_columns = X_train.columns.tolist()
 
-feature_columns = [
-    'age', 'd_age',
-    'attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports', 'exercise', 'dining',
-    'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading', 'tv',
-    'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga', 'gender_male',
-]
-
-
+# ----------------------------
+# Sidebar: user inputs
+# ----------------------------
 st.sidebar.header("Set Input Features")
-
 
 def user_input_features():
     inputs = {}
-
     # Gender first
-    inputs["gender_male"] = st.sidebar.selectbox(
-        "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
-    )
-
-    # Feature ranges
-    feature_ranges = {
-        "age": (18, 50, 25),           # min, max, default
-        "d_age": (0, 30, 5),
-        "samerace":(0, 1, 0)
-    }
-
-    # Remaining features
+    if "gender_male" in feature_columns:
+        inputs["gender_male"] = st.sidebar.selectbox(
+            "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
+        )
+    # Age first
+    if "age" in feature_columns:
+        inputs["age"] = st.sidebar.slider("Age", 18, 50, 25)
+    
+    # Other features (0-10 scale)
     for col in feature_columns:
-        if col == "gender_male":
+        if col in ["gender_male", "age"]:
             continue
-        if col in feature_ranges:
-            min_val, max_val, default = feature_ranges[col]
-        else:
-            min_val, max_val, default = 0, 10, 5  # default range for ratings
-        inputs[col] = st.sidebar.slider(col, min_val, max_val, default)
+        inputs[col] = st.sidebar.slider(col, 0, 10, 5)
+    
     return pd.DataFrame([inputs])
 
-# Create input_df here so sliders show
 input_df = user_input_features()
 
-if st.sidebar.button("Predict Match"):
-    # Ensure the input columns match the trained model
-    input_df_ordered = input_df[feature_columns]
+# ----------------------------
+# Prediction button
+# ----------------------------
+if st.sidebar.button("Find Nearest Matches"):
+    # Make sure input columns are in the correct order
+    input_ordered = input_df[feature_columns]
 
     # Scale input
-    input_scaled = scaler.transform(input_df_ordered)
+    input_scaled = scaler.transform(input_ordered)
 
-    # Nearest neighbors
+    # ----------------------------
+    # Find the 5 nearest neighbors
+    # ----------------------------
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+    
     nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    st.subheader("Nearest Neighbors")
-    st.write("These are the 5 closest matches to your input:")
+    st.subheader("5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
 
-    # Feature visualization
-    st.subheader("Feature Values")
+    # ----------------------------
+    # Feature Visualization
+    # ----------------------------
+    st.subheader("Input Feature Values")
     fig, ax = plt.subplots(figsize=(8,4))
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Selected Feature Values")
-    st.pyplot(fig)
-
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
+    input_ordered.T.plot(kind='bar', legend=False, ax=ax)
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
     ax.set_title("Selected Feature Values")
