@@ -8,10 +8,10 @@ import matplotlib.pyplot as plt
 # ----------------------------
 # Page config
 # ----------------------------
-st.set_page_config(page_title="Speed Dating Predictor", page_icon="💘")
-st.title("💘 Speed Dating Match Predictor")
+st.set_page_config(page_title="Aphrodate", page_icon="💘")
+st.title("💘 Aphrodate")
 st.markdown("""
-Adjust the sliders in the sidebar to set input features, then see the predicted match probability.
+Adjust the sliders in the sidebar to set input features, then see your predicted match probability.
 """)
 
 # ----------------------------
@@ -29,7 +29,7 @@ knn_model, scaler = load_model()
 # Define features
 # ----------------------------
 feature_columns = [
-    "age", "attractive", "intelligence", "funny", "ambition", "shared_interests"
+    "age", "attractive", "intelligence", "funny", "ambition"
     # Add more features if your dataset has them
 ]
 
