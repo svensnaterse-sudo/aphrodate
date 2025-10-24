@@ -39,35 +39,47 @@ feature_columns = [
 # ----------------------------
 st.sidebar.header("Set Input Features")
 
+# ----------------------------
+# Sidebar: user inputs
+# ----------------------------
+st.sidebar.header("Set Input Features")
+
 def user_input_features():
     inputs = {}
+
     # Gender first
     inputs["gender_male"] = st.sidebar.selectbox(
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
-    # Feature ranges
-    feature_ranges = {
-        "age": (18, 50, 25),
-        "d_age": (0, 30, 5),
-        "samerace": (0, 1, 0)
-    }
+    # Age slider
+    inputs["age"] = st.sidebar.slider("Age", 18, 50, 25)
 
-    # Remaining features
-    for col in feature_columns:
-        if col == "gender_male":
-            continue
-        if col in feature_ranges:
-            min_val, max_val, default = feature_ranges[col]
-        else:
-            min_val, max_val, default = 0, 10, 5
-        inputs[col] = st.sidebar.slider(col, min_val, max_val, default)
+    # Other numeric features (example range 0-10)
+    numeric_features = ['attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports', 'exercise',
+                        'dining', 'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading', 'tv',
+                        'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga']
+    for col in numeric_features:
+        inputs[col] = st.sidebar.slider(col, 0, 10, 5)
+
+    # Race as single selectbox
+    race_options = [
+        "Black/African American",
+        "European/Caucasian-American",
+        "Latino/Hispanic American",
+        "Other"
+    ]
+    selected_race = st.sidebar.selectbox("Race", race_options)
+    
+    # Convert race to one-hot encoding for your model
+    for race in race_options:
+        inputs[f"race_{race}"] = 1 if race == selected_race else 0
 
     return pd.DataFrame([inputs])
 
-# Create sliders so they always show
-# Always create sliders
+# Create sliders and selectbox
 input_df = user_input_features()
+
 
 # Prediction happens only when button is pressed
 if st.sidebar.button("Predict Match"):
