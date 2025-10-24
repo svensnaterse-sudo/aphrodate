@@ -18,10 +18,14 @@ Adjust the sliders in the sidebar to set input features, then see your predicted
 # Load model and scaler
 # ----------------------------
 @st.cache_resource
-def load_model():
+def load_model_and_data():
     knn_model = load("knn_model.joblib")
     scaler = load("scaler.joblib")
-    return knn_model, scaler
+    X_train = load("X_train.joblib")
+    y_train = load("y_train.joblib")
+    return knn_model, scaler, X_train, y_train
+
+knn_model, scaler, X_train, y_train = load_model_and_data()
 
 knn_model, scaler = load_model()
 
