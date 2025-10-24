@@ -31,7 +31,7 @@ knn_model, scaler, X_train, y_train = load_model_and_data()
 feature_columns = [
     'age', 'attractive', 'intelligence', 'funny', 'ambition','exercise','art',
     'reading', 'movies', 'music', 'shopping', 'gender_male', 'race_Black/African American',
-    'race_European/Caucasian-American', 'race_Latino/Hispanic American', 'race_Other', 'hiking'
+    'race_European/Caucasian-American', 'race_Latino/Hispanic American', 'race_Other'
 ]
 
 # ----------------------------
