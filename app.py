@@ -15,7 +15,7 @@ Adjust the sliders in the sidebar to set input features, then see your predicted
 """)
 
 # ----------------------------
-# Load model and scaler
+# Load model, scaler, and training data
 # ----------------------------
 @st.cache_resource
 def load_model_and_data():
@@ -27,10 +27,8 @@ def load_model_and_data():
 
 knn_model, scaler, X_train, y_train = load_model_and_data()
 
-
-
 # ----------------------------
-# Define features
+# Define features (same order as training)
 # ----------------------------
 feature_columns = [
     'age', 'd_age', 'samerace', 'importance_same_race',
@@ -45,8 +43,6 @@ feature_columns = [
     'race_o_Asian/Pacific Islander/Asian-American',
     'race_o_Black/African American', 'race_o_European/Caucasian-American',
     'race_o_Latino/Hispanic American', 'race_o_Other'
-
-    # Add more features if your dataset has them
 ]
 
 # ----------------------------
@@ -56,18 +52,26 @@ st.sidebar.header("Set Input Features")
 def user_input_features():
     inputs = {}
 
-    # inputs["gender_male"] = st.sidebar.selectbox(
-    #     "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
-    # )
+    # Gender first
+    inputs["gender_male"] = st.sidebar.selectbox(
+        "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
+    )
+
+    # Remaining features
     for col in feature_columns:
-        # Use realistic ranges based on your dataset
+        if col == "gender_male":
+            continue
         min_val = 0
         max_val = 10
         default = 5
         inputs[col] = st.sidebar.slider(col, min_val, max_val, default)
+
     return pd.DataFrame([inputs])
 
 input_df = user_input_features()
+
+# Ensure input features are in the same order as training
+input_df = input_df[feature_columns]
 
 # ----------------------------
 # Display input data
@@ -82,23 +86,20 @@ input_scaled = scaler.transform(input_df)
 prediction = knn_model.predict(input_scaled)
 
 st.subheader("Predicted Match Probability")
+st.write("💖", np.round(prediction[0], 3))
+
 # ----------------------------
 # Find the 3 nearest neighbors
 # ----------------------------
-# Get distances and indices of nearest neighbors
 distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
 
-# Convert indices to DataFrame rows
 nearest_neighbors = X_train.iloc[indices[0]].copy()
 nearest_neighbors["match"] = y_train.iloc[indices[0]].values
 nearest_neighbors["distance"] = distances[0]
 
-# Display
 st.subheader("Nearest Neighbors")
 st.write("These are the 3 closest matches to your input:")
 st.dataframe(nearest_neighbors)
-
-st.write("💖", np.round(prediction[0], 3))
 
 # ----------------------------
 # Feature Visualization
