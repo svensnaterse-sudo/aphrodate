@@ -29,7 +29,7 @@ knn_model, scaler = load_model()
 # Define features
 # ----------------------------
 feature_columns = [
-    "age", "attractive", "intelligence", "funny", "ambition"
+    "age", "attractive", "intelligence", "funny", "ambition", "ambition_important", "art", "attractive_important", "clubbing", "concerts"
     # Add more features if your dataset has them
 ]
 
