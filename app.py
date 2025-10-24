@@ -51,10 +51,6 @@ def user_input_features():
     inputs["gender_male"] = st.sidebar.selectbox(
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
-
-    # Age slider
-    inputs["age"] = st.sidebar.slider("Age", 18, 50, 25)
-        
     # Race as single selectbox
     race_options = [
         "Black/African American",
@@ -62,6 +58,10 @@ def user_input_features():
         "Latino/Hispanic American",
         "Other"
     ]
+    # Age slider
+    inputs["age"] = st.sidebar.slider("Age", 18, 50, 25)
+        
+
     selected_race = st.sidebar.selectbox("Race", race_options)
 
     # Other numeric features (example range 0-10)
