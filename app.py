@@ -86,6 +86,13 @@ if st.sidebar.button("Predict Match"):
     nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    st.subheader("5 Nearest Neighbors (Filtered by Gender)")
+    st.subheader("Your 5 best matches")
     st.dataframe(nearest_neighbors)
+    t.subheader("Selected Feature Values")
+    fig, ax = plt.subplots(figsize=(10, 4))
+    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
+    ax.set_ylabel("Value")
+    ax.set_xlabel("Feature")
+    ax.set_title("Input Feature Values")
+    st.pyplot(fig)
 
