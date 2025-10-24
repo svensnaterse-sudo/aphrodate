@@ -99,7 +99,10 @@ if st.sidebar.button("Predict Match"):
     prediction = knn_model.predict(input_scaled)
 
     st.subheader("Predicted Match Probability")
-    st.write("💖", np.round(prediction[0], 3))
+    probability = knn_model.predict_proba(input_scaled)
+    # probability of class 1 (match)
+    st.write("💖", np.round(probability[0][1], 3))
+
 
     # Nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
