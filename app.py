@@ -30,7 +30,7 @@ knn_model, scaler = load_model()
 # ----------------------------
 feature_columns = [
     "age", "attractive", "intelligence", "funny", "ambition", "ambtition_important", "art", "attractive_important", "clubbing", "concerts", "d_age", "dining", "exercise",
-    "gaming", "gender_male", "hiking", "importance_same_race"
+    "gaming", "gender_male", "hiking", "importance_same_race", "intellicence_important", "interests_correlate", "movies", "musuem", "music"
     # Add more features if your dataset has them
 ]
 
