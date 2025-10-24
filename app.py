@@ -55,6 +55,10 @@ feature_columns = [
 st.sidebar.header("Set Input Features")
 def user_input_features():
     inputs = {}
+
+    inputs["gender_male"] = st.sidebar.selectbox(
+        "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
+    )
     for col in feature_columns:
         # Use realistic ranges based on your dataset
         min_val = 0
