@@ -58,9 +58,9 @@ def user_input_features():
         "Latino/Hispanic American",
         "Other"
     ]
-    selected_race = st.sidebar.selectbox("Race", race_options)
+    selected_race = st.sidebar.selectbox("Desired race", race_options)
     # Age slider
-    inputs["age"] = st.sidebar.slider("Age", 18, 50, 25)
+    inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
         
 
 
