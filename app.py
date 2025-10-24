@@ -59,8 +59,8 @@ def user_input_features():
 
     # Feature ranges
     feature_ranges = {
-        "age": (18, 60, 25),           # min, max, default
-        "d_age": (18, 60, 25),
+        "age": (18, 50, 25),           # min, max, default
+        "d_age": (0, 30, 5),
         # You can add more realistic ranges for other features if needed
     }
 
