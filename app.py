@@ -74,6 +74,22 @@ input_scaled = scaler.transform(input_df)
 prediction = knn_model.predict(input_scaled)
 
 st.subheader("Predicted Match Probability")
+# ----------------------------
+# Find the 3 nearest neighbors
+# ----------------------------
+# Get distances and indices of nearest neighbors
+distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
+
+# Convert indices to DataFrame rows
+nearest_neighbors = X_train.iloc[indices[0]].copy()
+nearest_neighbors["match"] = y_train.iloc[indices[0]].values
+nearest_neighbors["distance"] = distances[0]
+
+# Display
+st.subheader("Nearest Neighbors")
+st.write("These are the 3 closest matches to your input:")
+st.dataframe(nearest_neighbors)
+
 st.write("💖", np.round(prediction[0], 3))
 
 # ----------------------------
