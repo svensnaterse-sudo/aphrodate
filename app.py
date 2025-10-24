@@ -11,7 +11,7 @@ st.title("💘 Aphrodate")
 st.markdown("Adjust the sliders in the sidebar to set input features, then see your perfect match")
 
 
-# @st.cache_resource
+@st.cache_resource
 def load_model_and_data():
     knn_model = load("knn_model.joblib")
     scaler = load("scaler.joblib")
@@ -33,8 +33,8 @@ def user_input_features():
     )
     # Race as single selectbox
     race_options = [
-        "Black/African American",
         "European/Caucasian-American",
+        "Black/African American",
         "Latino/Hispanic American",
         "Other"
     ]
@@ -67,26 +67,25 @@ input_df = user_input_features()
 
 # Prediction happens only when button is pressed
 if st.sidebar.button("Predict Match"):
+    # Ensure correct column order
     input_df_ordered = input_df[feature_columns]
-        # Get input vector
+
+    # Scale input
     input_scaled = scaler.transform(input_df_ordered)
-    
-    # Filter X_train to opposite gender
+
+    # Filter X_train by opposite gender
     selected_gender = input_df_ordered["gender_male"].iloc[0]
     X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
+
+    # Recompute nearest neighbors using filtered training data
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
     
-    # Scale filtered training data
-    X_train_filtered_scaled = scaler.transform(X_train_filtered)
-    
-    # Compute distances manually
-    distances = np.linalg.norm(X_train_filtered_scaled - input_scaled, axis=1)
-    nearest_idx = np.argsort(distances)[:5]
-    
-    nearest_neighbors = X_train_filtered.iloc[nearest_idx].copy()
-    nearest_neighbors["match"] = y_train_filtered.iloc[nearest_idx].values
-    nearest_neighbors["distance"] = distances[nearest_idx]
-    
-    st.subheader("5 Nearest Neighbors")
+    # Map filtered indices back
+    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
+    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
+    nearest_neighbors["distance"] = distances[0]
+
+    st.subheader("5 Nearest Neighbors (Filtered by Gender)")
     st.dataframe(nearest_neighbors)
 
