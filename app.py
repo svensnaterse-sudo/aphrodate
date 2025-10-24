@@ -15,7 +15,7 @@ st.markdown("Adjust the sliders in the sidebar to set input features, then see y
 # ----------------------------
 # Load model, scaler, and training data
 # ----------------------------
-@st.cache_resource
+# @st.cache_resource
 def load_model_and_data():
     knn_model = load("knn_model.joblib")
     scaler = load("scaler.joblib")
