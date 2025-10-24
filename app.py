@@ -29,7 +29,6 @@ knn_model, scaler = load_model()
 # Define features
 # ----------------------------
 feature_columns = [
-    feature_columns = [
     'age', 'd_age', 'samerace', 'importance_same_race',
     'attractive_important', 'intellicence_important', 'ambtition_important',
     'attractive', 'intelligence', 'funny', 'ambition',
@@ -42,7 +41,6 @@ feature_columns = [
     'race_o_Asian/Pacific Islander/Asian-American',
     'race_o_Black/African American', 'race_o_European/Caucasian-American',
     'race_o_Latino/Hispanic American', 'race_o_Other'
-]
 
     # Add more features if your dataset has them
 ]
