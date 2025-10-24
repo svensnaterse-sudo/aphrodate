@@ -94,17 +94,7 @@ if st.sidebar.button("Predict Match"):
     st.subheader("Input Data")
     st.write(input_df_ordered)
 
-    # Prediction
-    input_scaled = scaler.transform(input_df_ordered)
-    prediction = knn_model.predict(input_scaled)
 
-    st.subheader("Predicted Match Probability")
-    probability = knn_model.predict_proba(input_scaled)
-    # probability of class 1 (match)
-    st.write("💖", np.round(probability[0][1], 3))
-
-
-    # Nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
     nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
