@@ -66,14 +66,11 @@ def user_input_features():
         else:
             min_val, max_val, default = 0, 10, 5  # default range for ratings
         inputs[col] = st.sidebar.slider(col, min_val, max_val, default)
-
     return pd.DataFrame([inputs])
 
 # Create input_df here so sliders show
 input_df = user_input_features()
 
-if "predict_clicked" not in st.session_state:
-    st.session_state.predict_clicked = False
 if st.sidebar.button("Predict Match"):
     # Ensure the input columns match the trained model
     input_df_ordered = input_df[feature_columns]
