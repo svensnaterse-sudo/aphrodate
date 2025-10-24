@@ -5,18 +5,13 @@ import numpy as np
 from joblib import load
 import matplotlib.pyplot as plt
 
-# ----------------------------
-# Page config
-# ----------------------------
+
 st.set_page_config(page_title="Aphrodate", page_icon="💘")
 st.title("💘 Aphrodate")
 st.markdown("""
 Adjust the sliders in the sidebar to set input features, then see your predicted match probability.
 """)
 
-# ----------------------------
-# Load model, scaler, and training data
-# ----------------------------
 @st.cache_resource
 def load_model_and_data():
     knn_model = load("knn_model.joblib")
@@ -27,9 +22,7 @@ def load_model_and_data():
 
 knn_model, scaler, X_train, y_train = load_model_and_data()
 
-# ----------------------------
-# Define features (same order as training)
-# ----------------------------
+
 feature_columns = [
     'age', 'd_age', 'samerace', 'importance_same_race',
     'attractive_important', 'intellicence_important', 'ambtition_important',
@@ -45,18 +38,9 @@ feature_columns = [
     'race_o_Latino/Hispanic American', 'race_o_Other'
 ]
 
-# ----------------------------
-# Sidebar: user inputs
-# ----------------------------
-# ----------------------------
-# Sidebar: user inputs
-# ----------------------------
+
 st.sidebar.header("Set Input Features")
 
-# ----------------------------
-# Sidebar: user inputs
-# ----------------------------
-st.sidebar.header("Set Input Features")
 
 def user_input_features():
     inputs = {}
@@ -88,32 +72,22 @@ def user_input_features():
 # Create input_df here so sliders show
 input_df = user_input_features()
 
-# ----------------------------
-# Prediction button
-# ----------------------------
+
 if st.sidebar.button("Predict Match"):
     # Ensure the input columns match the trained model
     input_df_ordered = input_df[feature_columns]
 
-    # Display input data
-    st.subheader("Input Data")
-    st.write(input_df_ordered)
-
-    # Prediction
+    # Scale input
     input_scaled = scaler.transform(input_df_ordered)
-    prediction = knn_model.predict(input_scaled)
-
-    st.subheader("Predicted Match Probability")
-    st.write("💖", np.round(prediction[0], 3))
 
     # Nearest neighbors
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
     nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
     st.subheader("Nearest Neighbors")
-    st.write("These are the 3 closest matches to your input:")
+    st.write("These are the 5 closest matches to your input:")
     st.dataframe(nearest_neighbors)
 
     # Feature visualization
