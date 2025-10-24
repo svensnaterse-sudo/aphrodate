@@ -27,7 +27,7 @@ def load_model_and_data():
 
 knn_model, scaler, X_train, y_train = load_model_and_data()
 
-knn_model, scaler = load_model()
+
 
 # ----------------------------
 # Define features
