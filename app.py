@@ -65,16 +65,12 @@ def user_input_features():
     return pd.DataFrame([inputs])
 
 # Create sliders so they always show
+# Always create sliders
 input_df = user_input_features()
 
-# ----------------------------
-# Prediction button
-# ----------------------------
+# Prediction happens only when button is pressed
 if st.sidebar.button("Predict Match"):
-    # Ensure the input columns match the trained model
     input_df_ordered = input_df[feature_columns]
-
-    # Scale input
     input_scaled = scaler.transform(input_df_ordered)
     
     # Nearest neighbors
