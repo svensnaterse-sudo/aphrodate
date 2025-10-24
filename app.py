@@ -53,6 +53,11 @@ feature_columns = [
 # ----------------------------
 st.sidebar.header("Set Input Features")
 
+# ----------------------------
+# Sidebar: user inputs
+# ----------------------------
+st.sidebar.header("Set Input Features")
+
 def user_input_features():
     inputs = {}
 
@@ -94,7 +99,14 @@ if st.sidebar.button("Predict Match"):
     st.subheader("Input Data")
     st.write(input_df_ordered)
 
+    # Prediction
+    input_scaled = scaler.transform(input_df_ordered)
+    prediction = knn_model.predict(input_scaled)
 
+    st.subheader("Predicted Match Probability")
+    st.write("💖", np.round(prediction[0], 3))
+
+    # Nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
     nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
@@ -107,6 +119,12 @@ if st.sidebar.button("Predict Match"):
     # Feature visualization
     st.subheader("Feature Values")
     fig, ax = plt.subplots(figsize=(8,4))
+    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
+    ax.set_ylabel("Value")
+    ax.set_xlabel("Feature")
+    ax.set_title("Selected Feature Values")
+    st.pyplot(fig)
+
     input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
