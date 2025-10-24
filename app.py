@@ -29,17 +29,8 @@ knn_model, scaler, X_train, y_train = load_model_and_data()
 # Define features (same order as training)
 # ----------------------------
 feature_columns = [
-    'age', 'd_age', 'samerace', 'importance_same_race',
-    'attractive_important', 'intellicence_important', 'ambtition_important',
-    'attractive', 'intelligence', 'funny', 'ambition', 'shared_interests_partner',
-    'sports', 'tvsports', 'exercise', 'dining', 'museums', 'art', 'hiking',
-    'gaming', 'clubbing', 'reading', 'tv', 'theater', 'movies', 'concerts',
-    'music', 'shopping', 'yoga', 'interests_correlate', 'gender_male',
-    'race_Black/African American', 'race_European/Caucasian-American',
-    'race_Latino/Hispanic American', 'race_Other',
-    'race_o_Asian/Pacific Islander/Asian-American',
-    'race_o_Black/African American', 'race_o_European/Caucasian-American',
-    'race_o_Latino/Hispanic American', 'race_o_Other'
+    'age', 'd_age', 'attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports', 'exercise', 'dining', 'museums', 'art', 'hiking',
+    'gaming', 'clubbing', 'reading', 'tv', 'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga', 'gender_male', 
 ]
 
 # ----------------------------
