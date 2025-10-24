@@ -57,16 +57,25 @@ def user_input_features():
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
+    # Feature ranges
+    feature_ranges = {
+        "age": (18, 60, 25),           # min, max, default
+        "d_age": (18, 60, 25),
+        # You can add more realistic ranges for other features if needed
+    }
+
     # Remaining features
     for col in feature_columns:
         if col == "gender_male":
             continue
-        min_val = 0
-        max_val = 10
-        default = 5
+        if col in feature_ranges:
+            min_val, max_val, default = feature_ranges[col]
+        else:
+            min_val, max_val, default = 0, 10, 5  # default range for ratings
         inputs[col] = st.sidebar.slider(col, min_val, max_val, default)
 
     return pd.DataFrame([inputs])
+
 
 input_df = user_input_features()
 
