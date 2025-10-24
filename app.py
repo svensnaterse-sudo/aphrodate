@@ -31,11 +31,6 @@ feature_columns = [
     'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading', 'tv',
     'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga',
     'interests_correlate', 'gender_male',
-    'race_Black/African American', 'race_European/Caucasian-American',
-    'race_Latino/Hispanic American', 'race_Other',
-    'race_o_Asian/Pacific Islander/Asian-American',
-    'race_o_Black/African American', 'race_o_European/Caucasian-American',
-    'race_o_Latino/Hispanic American', 'race_o_Other'
 ]
 
 
