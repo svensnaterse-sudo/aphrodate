@@ -43,9 +43,8 @@ def user_input_features():
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
     # Other numeric features
-    numeric_features = ['attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports', 'exercise',
-                        'dining', 'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading', 'tv',
-                        'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga']
+    numeric_features = ['attractive', 'intelligence', 'funny', 'ambition', 'exercise',
+                        'art', 'reading', 'movies','music', 'shopping']
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
@@ -53,6 +52,14 @@ def user_input_features():
         inputs[f"race_{race}"] = 1 if race == selected_race else 0
 
     return pd.DataFrame([inputs])
+
+feature_columns = [
+    'age', 'attractive', 'intelligence', 'funny', 'ambition','exercise','art',
+    'reading', 'movies', 'music', 'shopping', 'gender_male', 'race_Black/African American',
+    'race_European/Caucasian-American', 'race_Latino/Hispanic American', 'race_Other'
+]
+
+
 
 # Create sliders and selectbox
 input_df = user_input_features()
