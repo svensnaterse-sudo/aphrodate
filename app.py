@@ -88,11 +88,4 @@ if st.sidebar.button("Predict Match"):
 
     st.subheader("Your 5 best matches")
     st.dataframe(nearest_neighbors)
-    st.subheader("Selected Feature Values")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Input Feature Values")
-    st.pyplot(fig)
 
