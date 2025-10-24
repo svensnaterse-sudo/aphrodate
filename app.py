@@ -48,7 +48,11 @@ feature_columns = [
 # ----------------------------
 # Sidebar: user inputs
 # ----------------------------
+# ----------------------------
+# Sidebar: user inputs
+# ----------------------------
 st.sidebar.header("Set Input Features")
+
 def user_input_features():
     inputs = {}
 
@@ -76,47 +80,41 @@ def user_input_features():
 
     return pd.DataFrame([inputs])
 
-input_df = input_df[feature_columns]
+# Create input_df here so sliders show
+input_df = user_input_features()
 
+# ----------------------------
+# Prediction button
+# ----------------------------
 if st.sidebar.button("Predict Match"):
-    input_df = user_input_features()
-    
+    # Ensure the input columns match the trained model
+    input_df_ordered = input_df[feature_columns]
 
-    
-    # ----------------------------
     # Display input data
-    # ----------------------------
     st.subheader("Input Data")
-    st.write(input_df)
-    
-    # ----------------------------
+    st.write(input_df_ordered)
+
     # Prediction
-    # ----------------------------
-    input_scaled = scaler.transform(input_df)
+    input_scaled = scaler.transform(input_df_ordered)
     prediction = knn_model.predict(input_scaled)
-    
+
     st.subheader("Predicted Match Probability")
     st.write("💖", np.round(prediction[0], 3))
-    
-    # ----------------------------
-    # Find the 3 nearest neighbors
-    # ----------------------------
+
+    # Nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=3)
-    
     nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
-    
+
     st.subheader("Nearest Neighbors")
     st.write("These are the 3 closest matches to your input:")
     st.dataframe(nearest_neighbors)
-    
-    # ----------------------------
-    # Feature Visualization
-    # ----------------------------
+
+    # Feature visualization
     st.subheader("Feature Values")
     fig, ax = plt.subplots(figsize=(8,4))
-    input_df.T.plot(kind='bar', legend=False, ax=ax)
+    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
     ax.set_title("Selected Feature Values")
