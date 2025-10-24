@@ -54,14 +54,7 @@ def user_input_features():
 
     # Age slider
     inputs["age"] = st.sidebar.slider("Age", 18, 50, 25)
-
-    # Other numeric features (example range 0-10)
-    numeric_features = ['attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports', 'exercise',
-                        'dining', 'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading', 'tv',
-                        'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga']
-    for col in numeric_features:
-        inputs[col] = st.sidebar.slider(col, 0, 10, 5)
-
+        
     # Race as single selectbox
     race_options = [
         "Black/African American",
@@ -70,6 +63,15 @@ def user_input_features():
         "Other"
     ]
     selected_race = st.sidebar.selectbox("Race", race_options)
+
+    # Other numeric features (example range 0-10)
+    numeric_features = ['attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports', 'exercise',
+                        'dining', 'museums', 'art', 'hiking', 'gaming', 'clubbing', 'reading', 'tv',
+                        'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga']
+    for col in numeric_features:
+        inputs[col] = st.sidebar.slider(col, 0, 10, 5)
+
+
     
     # Convert race to one-hot encoding for your model
     for race in race_options:
