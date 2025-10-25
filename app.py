@@ -64,30 +64,30 @@ feature_columns = [
 # Create sliders and selectbox
 input_df = user_input_features()
 
-
 if st.sidebar.button("Predict Match"):
-    # Ensure input columns match the training set
+    # Ensure input columns match training set
     input_df_ordered = input_df[feature_columns]
 
-    # Scale the input
+    # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
     # Determine number of neighbors safely
     n_neighbors = min(5, len(X_train))
 
-    # Compute nearest neighbors using the original training data
+    # Compute nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
 
-    # Select neighbors
+    # Use indices directly from the fitted data
     nearest_neighbors = X_train.iloc[indices[0]].copy()
+    nearest_neighbors = nearest_neighbors.reset_index(drop=True)  # reset to prevent indexing issues
     nearest_neighbors["match_score"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    # Display nearest neighbors
+    # Display results
     st.subheader("💘 Your 5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
 
-    # Feature comparison chart for your input
+    # Feature comparison chart for the input
     st.subheader("🎨 Feature Values")
     fig, ax = plt.subplots(figsize=(10, 4))
     input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
@@ -95,5 +95,4 @@ if st.sidebar.button("Predict Match"):
     ax.set_xlabel("Feature")
     ax.set_title("Your Selected Feature Values")
     st.pyplot(fig)
-
 
