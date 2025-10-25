@@ -73,38 +73,34 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Filter training set to only show potential matches of the opposite gender
-    selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
-    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
+    # Step 1: Get nearest neighbors from the full training set
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=10)  # get more in case some get filtered
 
-    # Recompute nearest neighbors using filtered training data
-    # Get nearest neighbors on the full training set
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=10)  # get extra just in case
-    
-    # Map indices back to full X_train
     neighbors = X_train.iloc[indices[0]].copy()
     neighbors["true_match_score"] = y_train.iloc[indices[0]].values
     neighbors["distance"] = distances[0]
-    
-    # Filter only opposite gender
+
+    # Step 2: Filter by opposite gender
+    selected_gender = input_df_ordered["gender_male"].iloc[0]
     neighbors_filtered = neighbors[neighbors["gender_male"] != selected_gender].copy()
-    
-    # Take top 5 after filtering
-    nearest_neighbors = neighbors_filtered.head(5)
 
+    # Step 3: Predict regression match score
+    neighbor_scaled = scaler.transform(neighbors_filtered[feature_columns])
+    neighbors_filtered["predicted_match_score"] = knn_model.predict(neighbor_scaled)
 
+    # Step 4: Take top 5 closest neighbors
+    top_neighbors = neighbors_filtered.nsmallest(5, "distance")
 
-    # Display results nicely
-    st.subheader("💘 Your 5 Most Compatible Matches")
+    # Step 5: Display table
+    st.subheader("💘 Your 5 Nearest Matches")
     st.dataframe(
-        nearest_neighbors[
+        top_neighbors[
             ["predicted_match_score", "true_match_score", "distance"] +
-            [col for col in nearest_neighbors.columns if col not in ["predicted_match_score", "true_match_score", "distance"]]
+            [col for col in top_neighbors.columns if col not in ["predicted_match_score", "true_match_score", "distance"]]
         ]
     )
 
-    # Visualization — clean comparison chart
+    # Step 6: Feature comparison chart
     st.subheader("🎨 Feature Comparison")
     fig, ax = plt.subplots(figsize=(10, 4))
     input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
