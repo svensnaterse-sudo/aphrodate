@@ -45,6 +45,13 @@ def user_input_features():
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
+    # Race (one-hot encoding)
+    race_cols = [col for col in feature_columns if col.startswith("race_")]
+    race_options = [col.replace("race_", "") for col in race_cols]
+    selected_race = st.sidebar.selectbox("Desired race", race_options)
+    for race in race_options:
+        inputs[f"race_{race}"] = 1 if race == selected_race else 0
+
     # Age
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
@@ -53,12 +60,6 @@ def user_input_features():
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
-    # Race (one-hot encoding)
-    race_cols = [col for col in feature_columns if col.startswith("race_")]
-    race_options = [col.replace("race_", "") for col in race_cols]
-    selected_race = st.sidebar.selectbox("Desired race", race_options)
-    for race in race_options:
-        inputs[f"race_{race}"] = 1 if race == selected_race else 0
 
     return pd.DataFrame([inputs])
 
