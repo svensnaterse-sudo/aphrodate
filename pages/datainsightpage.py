@@ -25,10 +25,7 @@ def load_data():
 
 X_train, y_train = load_data()
 
-# ----------------------------
-# Basic dataset info
-# ----------------------------
-st.subheader("📁 Dataset Overview")
+
 st.write(f"**Total of people:** {len(X_train)}")
 st.write(f"**Total features:** {X_train.shape[1]}")
 
