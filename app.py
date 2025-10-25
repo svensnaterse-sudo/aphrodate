@@ -86,13 +86,14 @@ if st.sidebar.button("Predict Match"):
     nearest_neighbors["true_match_score"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    # --- NEW: Predict "match probability" (regression output) ---
+    # Predict match score (regression output)
     neighbor_scaled = scaler.transform(nearest_neighbors[feature_columns])
     predicted_match_scores = knn_model.predict(neighbor_scaled)
     nearest_neighbors["predicted_match_score"] = np.round(predicted_match_scores, 3)
 
-    # Display results
-    st.subheader("💘 Your 5 Nearest Matches")
+
+    # Display results nicely
+    st.subheader("💘 Your 5 Most Compatible Matches")
     st.dataframe(
         nearest_neighbors[
             ["predicted_match_score", "true_match_score", "distance"] +
@@ -100,9 +101,11 @@ if st.sidebar.button("Predict Match"):
         ]
     )
 
-    # Visualization
-    st.subheader("Feature Comparison")
-    fig, ax = plt.subplots(figsize=(8, 4))
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
-    ax
-
+    # Visualization — clean comparison chart
+    st.subheader("🎨 Feature Comparison")
+    fig, ax = plt.subplots(figsize=(10, 4))
+    input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
+    ax.set_ylabel("Value")
+    ax.set_xlabel("Feature")
+    ax.set_title("Your Selected Feature Values")
+    st.pyplot(fig)
