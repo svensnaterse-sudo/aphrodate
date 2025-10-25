@@ -80,16 +80,10 @@ if st.sidebar.button("Predict Match"):
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    # Compute weighted similarity score
-    similarities = 1 / (1 + distances[0])  # closer = higher
-    weighted_score = np.sum(nearest_neighbors["match"] * similarities) / np.sum(similarities)
-
     # Display nearest neighbors
-    st.subheader("💘 Your 5 Nearest Neighbors")
+    st.subheader("💘 Your 5 best matches")
     st.dataframe(nearest_neighbors)
 
-    # Display weighted compatibility score
-    st.subheader(f"❤️ Estimated Compatibility Score: {weighted_score:.2f} (0–1 scale)")
 
     # Feature comparison chart
     st.subheader("🎨 Feature Values")
