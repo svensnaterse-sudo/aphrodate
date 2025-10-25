@@ -79,17 +79,20 @@ if st.sidebar.button("Predict Match"):
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
 
     # Recompute nearest neighbors using filtered training data
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+    # Get nearest neighbors on the full training set
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=10)  # get extra just in case
+    
+    # Map indices back to full X_train
+    neighbors = X_train.iloc[indices[0]].copy()
+    neighbors["true_match_score"] = y_train.iloc[indices[0]].values
+    neighbors["distance"] = distances[0]
+    
+    # Filter only opposite gender
+    neighbors_filtered = neighbors[neighbors["gender_male"] != selected_gender].copy()
+    
+    # Take top 5 after filtering
+    nearest_neighbors = neighbors_filtered.head(5)
 
-    # Select those neighbors from the filtered dataset
-    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
-    nearest_neighbors["true_match_score"] = y_train_filtered.iloc[indices[0]].values
-    nearest_neighbors["distance"] = distances[0]
-
-    # Predict match score (regression output)
-    neighbor_scaled = scaler.transform(nearest_neighbors[feature_columns])
-    predicted_match_scores = knn_model.predict(neighbor_scaled)
-    nearest_neighbors["predicted_match_score"] = np.round(predicted_match_scores, 3)
 
 
     # Display results nicely
