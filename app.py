@@ -85,12 +85,12 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
     # Determine number of neighbors safely
-    n_neighbors = min(5, len(X_train_filtered))
+    n_neighbors = min(5, len(X_train_filtered_scaled))
 
-    # Compute nearest neighbors using filtered data
+    # Compute nearest neighbors using filtered and scaled data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
 
-    # Select neighbors from filtered dataset
+    # Select neighbors from filtered dataset using correct indices
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
@@ -106,6 +106,6 @@ if st.sidebar.button("Predict Match"):
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
     ax.set_title("Your Selected Feature Values")
-    st.pyplot
+    st.pyplot(fig)
 
 
