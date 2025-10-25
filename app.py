@@ -66,6 +66,7 @@ input_df = user_input_features()
 
 
 # Prediction happens only when button is pressed
+# Prediction happens only when button is pressed
 if st.sidebar.button("Predict Match"):
     # Ensure correct column order
     input_df_ordered = input_df[feature_columns]
@@ -78,17 +79,28 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
 
-    # Recompute nearest neighbors using filtered training data
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
-    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
-    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
-    nearest_neighbors["distance"] = distances[0]
+    # Scale the filtered training set
+    X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
-        # Predict match probability for each neighbor
-    neighbor_scaled = scaler.transform(nearest_neighbors[feature_columns])
-    neighbor_probs = knn_model.predict_proba(neighbor_scaled)[:, 1]  # probability of match=1
-    nearest_neighbors["match_probability"] = np.round(neighbor_probs, 3)
+    # Predict match probability for all potential partners
+    match_probs = knn_model.predict_proba(X_train_filtered_scaled)[:, 1]  # prob match=1
 
-    st.subheader("Your 5 best matches")
-    st.dataframe(nearest_neighbors)
+    # Add probabilities to filtered dataset
+    results = X_train_filtered.copy()
+    results["match_probability"] = match_probs
+    results["actual_match"] = y_train_filtered.values
 
+    # Sort by highest predicted probability
+    top_matches = results.sort_values(by="match_probability", ascending=False).head(5)
+
+    st.subheader("💘 Your Top 5 Predicted Matches")
+    st.dataframe(top_matches)
+
+    # Visualize the probabilities
+    st.subheader("Predicted Match Probabilities")
+    fig, ax = plt.subplots(figsize=(8, 4))
+    ax.barh(top_matches.index.astype(str), top_matches["match_probability"], color="pink")
+    ax.set_xlabel("Match Probability")
+    ax.set_ylabel("User Index")
+    ax.set_title("Top 5 Most Compatible Matches")
+    st.pyplot(fig)
