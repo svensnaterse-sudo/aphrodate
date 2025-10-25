@@ -33,15 +33,11 @@ st.write(f"**Total of people:** {len(X_train)}")
 st.write(f"**Total features:** {X_train.shape[1]}")
 
 
-# ----------------------------
-# Summary stats
-# ----------------------------
+
 st.subheader("📈 Summary Statistics")
 st.dataframe(X_train.describe().T)
 
-# ----------------------------
-# Feature exploration controls
-# ----------------------------
+
 st.sidebar.header("🔍 Explore Feature Distributions")
 
 feature_cols = X_train.columns.tolist()
@@ -57,14 +53,15 @@ numeric_cols = [
 # ----------------------------
 # Gender & Race distribution combined
 # ----------------------------
-st.subheader("🚻🌍 Demographic Distribution")
+st.subheader("🚻🌍 Showcase either race or gender")
 
 # Options to choose
 race_or_gender = []
-if gender_col:
-    race_or_gender.append("Gender")
 if race_cols:
     race_or_gender.append("Race")
+if gender_col:
+    race_or_gender.append("Gender")
+
 
 selected_demo = st.selectbox("Select feature to visualize", race_or_gender)
 
