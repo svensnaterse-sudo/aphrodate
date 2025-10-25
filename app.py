@@ -95,5 +95,5 @@ if st.sidebar.button("Predict Match"):
     # Feature comparison chart
     st.subheader("🎨 Feature Comparison")
     fig, ax = plt.subplots(figsize=(10, 4))
-    input_df_ordered.T.plot(kind="bar",
+    input_df_ordered.T.plot(kind="bar",)
 
