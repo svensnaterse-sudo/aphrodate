@@ -71,27 +71,29 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Filter X_train to only opposite-gender candidates and reset index
-    selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
-    y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
-
     # Determine number of neighbors safely
-    n_neighbors = min(5, len(X_train_filtered))
+    n_neighbors = min(5, len(X_train))
 
-    # Scale filtered data
-    X_train_filtered_scaled = scaler.transform(X_train_filtered)
-
-    # Compute nearest neighbors using filtered training data
+    # Compute nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
 
-    # Select neighbors from filtered dataset
-    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
-    nearest_neighbors["match_score"] = y_train_filtered.iloc[indices[0]].values
+    # Use indices directly from the fitted data
+    nearest_neighbors = X_train.iloc[indices[0]].copy()
+    nearest_neighbors = nearest_neighbors.reset_index(drop=True)  # reset to prevent indexing issues
+    nearest_neighbors["match_score"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
     # Display results
-    st.subheader("💘 Your 5 Nearest Neighbors (Opposite Gender)")
+    st.subheader("💘 Your 5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
+
+    # Feature comparison chart for the input
+    st.subheader("🎨 Feature Values")
+    fig, ax = plt.subplots(figsize=(10, 4))
+    input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
+    ax.set_ylabel("Value")
+    ax.set_xlabel("Feature")
+    ax.set_title("Your Selected Feature Values")
+    st.pyplot(fig)
 
 
