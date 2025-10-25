@@ -81,7 +81,7 @@ if st.sidebar.button("Predict Match"):
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
 
     # Use indices directly from the fitted data
-    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
+    nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors = nearest_neighbors.reset_index(drop=True)  # reset to prevent indexing issues
     nearest_neighbors["distance"] = distances[0]
 
