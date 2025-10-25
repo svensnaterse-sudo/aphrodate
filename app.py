@@ -30,12 +30,7 @@ knn_model, scaler, X_train, y_train = load_model_and_data()
 # ----------------------------
 # Define features (same order as training)
 # ----------------------------
-feature_columns = [
-    'age', 'attractive', 'intelligence', 'funny', 'ambition','exercise','art',
-    'reading', 'movies', 'music', 'shopping', 'gender_male',
-    'race_Black/African American', 'race_European/Caucasian-American',
-    'race_Latino/Hispanic American', 'race_Other'
-]
+feature_columns = X_train.columns.tolist()
 
 # ----------------------------
 # Sidebar: user inputs
@@ -50,26 +45,18 @@ def user_input_features():
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
-    # Race
-    race_options = [
-        "Black/African American", "European/Caucasian-American",
-        "Latino/Hispanic American", "Other"
-    ]
-    selected_race = st.sidebar.selectbox("Desired race", race_options)
-
     # Age
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
     # Other numeric features (0-10)
-    numeric_features = [
-        'attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports',
-        'exercise', 'dining', 'museums', 'art', 'hiking', 'gaming', 'clubbing',
-        'reading', 'tv', 'theater', 'movies', 'concerts', 'music', 'shopping', 'yoga'
-    ]
+    numeric_features = [col for col in feature_columns if col not in ["age","gender_male"] and "race_" not in col]
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
-    # One-hot encoding for race
+    # Race (one-hot encoding)
+    race_cols = [col for col in feature_columns if col.startswith("race_")]
+    race_options = [col.replace("race_", "") for col in race_cols]
+    selected_race = st.sidebar.selectbox("Desired race", race_options)
     for race in race_options:
         inputs[f"race_{race}"] = 1 if race == selected_race else 0
 
@@ -80,9 +67,6 @@ input_df = user_input_features()
 # ----------------------------
 # Prediction button
 # ----------------------------
-# ----------------------------
-# Prediction button
-# ----------------------------
 if st.sidebar.button("Predict Match"):
     # Match input columns
     input_df_ordered = input_df[feature_columns]
@@ -90,21 +74,22 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Compute nearest neighbors using filtered data
+    # Compute nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
-
-    # Select neighbors from filtered dataset
     nearest_neighbors = X_train.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
+    # Compute weighted similarity score
+    similarities = 1 / (1 + distances[0])  # closer = higher
+    weighted_score = np.sum(nearest_neighbors["match"] * similarities) / np.sum(similarities)
+
     # Display nearest neighbors
-    st.subheader(f"💘 Your 5 Nearest Neighbors")
+    st.subheader("💘 Your 5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
 
-    # Calculate match probability (average of neighbors)
-    match_probability = nearest_neighbors["match"].mean()
-    st.subheader(f"❤️ Estimated Match Probability: {match_probability:.2f}")
+    # Display weighted compatibility score
+    st.subheader(f"❤️ Estimated Compatibility Score: {weighted_score:.2f} (0–1 scale)")
 
     # Feature comparison chart
     st.subheader("🎨 Feature Values")
