@@ -53,7 +53,7 @@ numeric_cols = [
 # ----------------------------
 # Gender & Race distribution combined
 # ----------------------------
-st.subheader("🚻🌍 Showcase either race or gender")
+st.subheader("🚻🌍 Showcase statistics from either race or gender")
 
 # Options to choose
 race_or_gender = []
@@ -93,31 +93,4 @@ ax.set_title(f"Distribution of {selected_trait}")
 ax.set_xlabel(selected_trait)
 st.pyplot(fig)
 
-# ----------------------------
-# Correlation heatmap
-# ----------------------------
-st.subheader("🔥 Feature Correlations")
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.heatmap(X_train[numeric_cols].corr(), cmap="coolwarm", center=0, ax=ax)
-ax.set_title("Correlation Heatmap of Traits")
-st.pyplot(fig)
 
-# ----------------------------
-# Match outcome analysis
-# ----------------------------
-if y_train is not None and isinstance(y_train, pd.Series):
-    st.subheader("💞 Match Outcome Analysis")
-    Xy = X_train.copy()
-    Xy["match"] = y_train
-
-    # Average traits for successful vs unsuccessful matches
-    avg_traits = Xy.groupby("match")[numeric_cols].mean().T
-    fig, ax = plt.subplots(figsize=(8, 4))
-    avg_traits.plot(kind="bar", ax=ax)
-    ax.set_title("Average Trait Values by Match Outcome")
-    ax.set_ylabel("Average Score")
-    ax.legend(title="Match", labels=["No Match", "Match"])
-    st.pyplot(fig)
-
-st.markdown("---")
-st.caption("💘 Aphrodate — Exploring the science of attraction, one profile at a time.")
