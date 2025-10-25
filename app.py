@@ -69,43 +69,33 @@ input_df = user_input_features()
 # Prediction button
 # ----------------------------
 # Inside the Predict Match button block
+# ----------------------------
+# Prediction button
+# ----------------------------
 if st.sidebar.button("Predict Match"):
-    # Ensure correct column order
+    # Ensure the input columns match the trained model
     input_df_ordered = input_df[feature_columns]
 
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Filter X_train by opposite gender and reset index
-    selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
-    y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
-
-    # Scale filtered training data
-    X_train_filtered_scaled = scaler.transform(X_train_filtered)
-
-    # Determine number of neighbors safely
-    n_neighbors = min(5, len(X_train_filtered_scaled))
-
-    # Compute nearest neighbors using filtered and scaled data
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
-
-    # Select neighbors from filtered dataset using correct indices
-    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
-    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
+    # Nearest neighbors
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+    nearest_neighbors = X_train.iloc[indices[0]].copy()
+    nearest_neighbors["match"] = y_train.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    # Display nearest neighbors
-    st.subheader("💘 Your 5 Nearest Neighbors (Filtered by Gender)")
+    st.subheader("Nearest Neighbors")
+    st.write("These are the 5 closest matches to your input:")
     st.dataframe(nearest_neighbors)
 
-    # Feature comparison chart
-    st.subheader("🎨 Feature Comparison")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
+    # Feature visualization
+    st.subheader("Feature Values")
+    fig, ax = plt.subplots(figsize=(8,4))
+    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
-    ax.set_title("Your Selected Feature Values")
+    ax.set_title("Selected Feature Values")
     st.pyplot(fig)
 
 
