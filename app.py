@@ -68,30 +68,28 @@ input_df = user_input_features()
 # ----------------------------
 # Prediction button
 # ----------------------------
+# Inside the Predict Match button block
 if st.sidebar.button("Predict Match"):
-    # Ensure the input columns match the trained model
+    # Ensure correct column order
     input_df_ordered = input_df[feature_columns]
 
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Nearest neighbors
+    # Filter X_train by opposite gender
+    selected_gender = input_df_ordered["gender_male"].iloc[0]
+    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
+    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
+
+    # Recompute nearest neighbors using filtered training data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
-    nearest_neighbors = X_train.iloc[indices[0]].copy()
-    nearest_neighbors["match"] = y_train.iloc[indices[0]].values
+    
+    # Map filtered indices back
+    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
+    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    st.subheader("Nearest Neighbors")
-    st.write("These are the 5 closest matches to your input:")
+    st.subheader("5 Nearest Neighbors (Filtered by Gender)")
     st.dataframe(nearest_neighbors)
-
-    # Feature visualization
-    st.subheader("Feature Values")
-    fig, ax = plt.subplots(figsize=(8,4))
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Selected Feature Values")
-    st.pyplot(fig)
 
 
