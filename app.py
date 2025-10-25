@@ -96,8 +96,8 @@ if st.sidebar.button("Predict Match"):
 
     # Nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
-    nearest_neighbors = X_train.iloc[indices[0]].copy()
-    nearest_neighbors["match"] = y_train.iloc[indices[0]].values
+    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
+    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
     # Display nearest neighbors
