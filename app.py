@@ -65,7 +65,6 @@ feature_columns = [
 input_df = user_input_features()
 
 
-# Prediction happens only when button is pressed
 if st.sidebar.button("Predict Match"):
     # Ensure correct column order
     input_df_ordered = input_df[feature_columns]
@@ -75,14 +74,19 @@ if st.sidebar.button("Predict Match"):
 
     # Filter training set to opposite gender
     selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
-    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
+    X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
+    y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
+
+    # Determine safe number of neighbors
+    n_neighbors = min(5, len(X_train_filtered))
 
     # Scale filtered training set
     X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
-    # Compute distances and indices from filtered training set
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+    # Compute nearest neighbors
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
+
+    # Select neighbors safely
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
     nearest_neighbors["distance"] = distances[0]
     nearest_neighbors["true_match_score"] = y_train_filtered.iloc[indices[0]].values
@@ -91,19 +95,7 @@ if st.sidebar.button("Predict Match"):
     neighbor_scaled = scaler.transform(nearest_neighbors[feature_columns])
     nearest_neighbors["predicted_match_score"] = knn_model.predict(neighbor_scaled)
 
-    # Display table
-    st.subheader("💘 Your 5 Nearest Matches")
-    st.dataframe(
-        nearest_neighbors[["predicted_match_score", "true_match_score", "distance"] + 
-                          [col for col in nearest_neighbors.columns if col not in ["predicted_match_score", "true_match_score", "distance"]]]
-    )
-
-    # Feature comparison chart
-    st.subheader("🎨 Feature Comparison")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Your Selected Feature Values")
-    st.pyplot(fig)
+    # Display results
+    st.subheader("💘 Your Nearest Matches")
+    st.dataframe(nearest_neighbors[["predicted_match_score", "true_match_score", "distance"]])
 
