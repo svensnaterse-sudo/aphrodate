@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="Aphrodate", page_icon="💘")
 st.title("💘 Aphrodate")
 st.markdown(
-    "Adjust the sliders in the sidebar to set input features, then see your predicted match probability."
+    "Adjust the sliders in the sidebar to set input features, then see your nearest matches."
 )
 
 # ----------------------------
@@ -45,22 +45,22 @@ st.sidebar.header("Set Input Features")
 def user_input_features():
     inputs = {}
 
-    # Gender first
+    # Gender
     inputs["gender_male"] = st.sidebar.selectbox(
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
-    # Race as single selectbox
+    # Race
     race_options = [
         "Black/African American", "European/Caucasian-American",
         "Latino/Hispanic American", "Other"
     ]
     selected_race = st.sidebar.selectbox("Desired race", race_options)
 
-    # Age slider
+    # Age
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
-    # Other numeric features (example range 0-10)
+    # Other numeric features (0-10)
     numeric_features = [
         'attractive', 'intelligence', 'funny', 'ambition', 'sports', 'tvsports',
         'exercise', 'dining', 'museums', 'art', 'hiking', 'gaming', 'clubbing',
@@ -69,20 +69,19 @@ def user_input_features():
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
-    # Convert race to one-hot encoding for your model
+    # One-hot encoding for race
     for race in race_options:
         inputs[f"race_{race}"] = 1 if race == selected_race else 0
 
     return pd.DataFrame([inputs])
 
-# Create sliders and selectbox
 input_df = user_input_features()
 
 # ----------------------------
-# Prediction happens only when button is pressed
+# Prediction button
 # ----------------------------
 if st.sidebar.button("Predict Match"):
-    # Ensure input columns match training set
+    # Match input columns
     input_df_ordered = input_df[feature_columns]
 
     # Scale input
@@ -93,30 +92,29 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
 
-    # Scale the filtered data
+    # Scale filtered training data
     X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
-    # Determine neighbors safely
+    # Determine number of neighbors safely
     n_neighbors = min(5, len(X_train_filtered))
 
     # Compute nearest neighbors using filtered data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
 
-    # Select neighbors from the filtered dataset
+    # Select neighbors from filtered dataset
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
     # Display nearest neighbors
-    st.subheader(f"💘 Your {n_neighbors} Nearest Neighbors (Filtered by Gender)")
+    st.subheader(f"💘 Your {n_neighbors} Nearest Neighbors")
     st.dataframe(nearest_neighbors)
 
-    # Feature visualization
+    # Feature comparison chart
     st.subheader("🎨 Feature Values")
     fig, ax = plt.subplots(figsize=(8,4))
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
+    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax, color='lightcoral')
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
     ax.set_title("Selected Feature Values")
     st.pyplot(fig)
-
