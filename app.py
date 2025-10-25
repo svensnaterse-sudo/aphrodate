@@ -80,15 +80,15 @@ input_df = user_input_features()
 # ----------------------------
 # Prediction button
 # ----------------------------
+# ----------------------------
+# Prediction button
+# ----------------------------
 if st.sidebar.button("Predict Match"):
     # Match input columns
     input_df_ordered = input_df[feature_columns]
 
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
-
-
-
 
     # Compute nearest neighbors using filtered data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
@@ -101,6 +101,10 @@ if st.sidebar.button("Predict Match"):
     # Display nearest neighbors
     st.subheader(f"💘 Your 5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
+
+    # Calculate match probability (average of neighbors)
+    match_probability = nearest_neighbors["match"].mean()
+    st.subheader(f"❤️ Estimated Match Probability: {match_probability:.2f}")
 
     # Feature comparison chart
     st.subheader("🎨 Feature Values")
