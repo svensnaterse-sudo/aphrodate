@@ -71,8 +71,6 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Determine number of neighbors safely
-    n_neighbors = min(5, len(X_train))
 
        # Filter X_train by opposite gender
     selected_gender = input_df_ordered["gender_male"].iloc[0]
@@ -80,7 +78,7 @@ if st.sidebar.button("Predict Match"):
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
 
     # Compute nearest neighbors
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
 
     # Use indices directly from the fitted data
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
