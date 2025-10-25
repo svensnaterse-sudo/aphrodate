@@ -88,27 +88,35 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Filter training set by opposite gender
+    # Filter training set by opposite gender and reset index
     selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
-    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
+    X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
+    y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
 
+    # Scale the filtered data
+    X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
-    # Nearest neighbors
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+    # Determine neighbors safely
+    n_neighbors = min(5, len(X_train_filtered))
+
+    # Compute nearest neighbors using filtered data
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
+
+    # Select neighbors from the filtered dataset
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
     # Display nearest neighbors
-    st.subheader("5 Nearest Neighbors")
+    st.subheader(f"💘 Your {n_neighbors} Nearest Neighbors (Filtered by Gender)")
     st.dataframe(nearest_neighbors)
 
     # Feature visualization
-    st.subheader("Feature Values")
+    st.subheader("🎨 Feature Values")
     fig, ax = plt.subplots(figsize=(8,4))
     input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
     ax.set_ylabel("Value")
     ax.set_xlabel("Feature")
     ax.set_title("Selected Feature Values")
     st.pyplot(fig)
+
