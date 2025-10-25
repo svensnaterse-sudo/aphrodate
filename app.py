@@ -75,21 +75,30 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    predicted_prob = knn_model.predict(input_scaled)[0]
-
-    # Display probability
-    st.subheader("💞 Estimated Match Probability")
-    st.metric(
-        label="Chance of getting a match",
-        value=f"{predicted_prob * 100:.1f}%",
-        delta=None
-    )
-
-    # Compute nearest neighbors
-    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
-    nearest_neighbors = X_train.iloc[indices[0]].copy()
-    nearest_neighbors["match"] = y_train.iloc[indices[0]].values
-    nearest_neighbors["distance"] = distances[0]
+# Filter training data to only include opposite gender
+    user_gender = int(input_df["gender_male"].iloc[0])
+    if "gender_male" in X_train.columns:
+        opposite_gender_mask = X_train["gender_male"] != user_gender
+        X_train_filtered = X_train[opposite_gender_mask]
+        y_train_filtered = y_train[opposite_gender_mask]
+    else:
+        X_train_filtered = X_train
+        y_train_filtered = y_train
+    
+    # Compute nearest neighbors manually using the trained scaler and model
+    from sklearn.metrics import pairwise_distances
+    
+    # Scale filtered training data
+    X_train_scaled = scaler.transform(X_train_filtered)
+    
+    # Compute distances manually to avoid re-fitting model
+    distances = pairwise_distances(input_scaled, X_train_scaled)
+    nearest_indices = np.argsort(distances[0])[:5]
+    
+    # Get nearest matches
+    nearest_neighbors = X_train_filtered.iloc[nearest_indices].copy()
+    nearest_neighbors["match"] = y_train_filtered.iloc[nearest_indices].values
+    nearest_neighbors["distance"] = distances[0][nearest_indices]
 
     # Display nearest neighbors
     st.subheader("💘 Your 5 best matches")
