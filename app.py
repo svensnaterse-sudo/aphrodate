@@ -74,26 +74,26 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Filter X_train by opposite gender
-    selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
-    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
-
+        # Recompute nearest neighbors using filtered training data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+
+    # Select those neighbors from the filtered dataset
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
     nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    # Scale the filtered training set
-    X_train_filtered_scaled = scaler.transform(X_train_filtered)
+    # Show results
+    st.subheader("💘 Your 5 Nearest Matches")
+    st.dataframe(nearest_neighbors)
 
-    # Predict match probability for all potential partners
-    match_probs = knn_model.predict_proba(X_train_filtered_scaled)[:, 1]  # prob match=1
-
-    # Add probabilities to filtered dataset
-    results = X_train_filtered.copy()
-    results["match_probability"] = match_probs
-    results["actual_match"] = y_train_filtered.values
+    # Visualization
+    st.subheader("Feature Comparison")
+    fig, ax = plt.subplots(figsize=(8, 4))
+    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
+    ax.set_ylabel("Value")
+    ax.set_xlabel("Feature")
+    ax.set_title("Your Selected Feature Values")
+    st.pyplot(fig)
 
     
 
