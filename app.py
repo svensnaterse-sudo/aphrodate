@@ -11,7 +11,7 @@ st.title("💘 Aphrodate")
 st.markdown("Adjust the sliders in the sidebar to set input features, then see your perfect match")
 
 
-@st.cache_resource
+# @st.cache_resource
 def load_model_and_data():
     knn_model = load("knn_model.joblib")
     scaler = load("scaler.joblib")
@@ -71,20 +71,27 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-    # Determine number of neighbors safely
-    n_neighbors = min(5, len(X_train))
+    # Filter X_train to only opposite-gender candidates and reset index
+    selected_gender = input_df_ordered["gender_male"].iloc[0]
+    X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
+    y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
 
-    # Compute nearest neighbors
+    # Determine number of neighbors safely
+    n_neighbors = min(5, len(X_train_filtered))
+
+    # Scale filtered data
+    X_train_filtered_scaled = scaler.transform(X_train_filtered)
+
+    # Compute nearest neighbors using filtered training data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
 
-    # Use indices directly from the fitted data
-    nearest_neighbors = X_train.iloc[indices[0]].copy()
-    nearest_neighbors = nearest_neighbors.reset_index(drop=True)  # reset to prevent indexing issues
-    nearest_neighbors["match_score"] = y_train.iloc[indices[0]].values
+    # Select neighbors from filtered dataset
+    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
+    nearest_neighbors["match_score"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
     # Display results
-    st.subheader("💘 Your 5 Nearest Neighbors")
+    st.subheader("💘 Your 5 Nearest Neighbors (Opposite Gender)")
     st.dataframe(nearest_neighbors)
 
 
