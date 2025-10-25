@@ -75,6 +75,16 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
+    predicted_prob = knn_model.predict(input_scaled)[0]
+
+    # Display probability
+    st.subheader("💞 Estimated Match Probability")
+    st.metric(
+        label="Chance of getting a match",
+        value=f"{predicted_prob * 100:.1f}%",
+        delta=None
+    )
+
     # Compute nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
     nearest_neighbors = X_train.iloc[indices[0]].copy()
