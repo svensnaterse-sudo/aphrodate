@@ -88,7 +88,7 @@ st.subheader("📊 Trait Distributions")
 selected_trait = st.selectbox("Select a trait to visualize", numeric_cols)
 
 fig, ax = plt.subplots()
-sns.histplot(X_train[selected_trait], kde=True, color="orchid", ax=ax)
+# sns.histplot(X_train[selected_trait], kde=True, color="orchid", ax=ax)
 ax.set_title(f"Distribution of {selected_trait}")
 ax.set_xlabel(selected_trait)
 st.pyplot(fig)
