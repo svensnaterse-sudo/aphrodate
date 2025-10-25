@@ -77,25 +77,23 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered = X_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender].reset_index(drop=True)
 
-    # Determine safe number of neighbors
+    # Determine number of neighbors safely
     n_neighbors = min(5, len(X_train_filtered))
-
-    # Scale filtered training set
-    X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
     # Compute nearest neighbors
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=n_neighbors)
 
-    # Select neighbors safely
+    # Select nearest neighbors
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
     nearest_neighbors["distance"] = distances[0]
-    nearest_neighbors["true_match_score"] = y_train_filtered.iloc[indices[0]].values
-
-    # Predict continuous match scores
-    neighbor_scaled = scaler.transform(nearest_neighbors[feature_columns])
-    nearest_neighbors["predicted_match_score"] = knn_model.predict(neighbor_scaled)
+    nearest_neighbors["actual_match_score"] = y_train_filtered.iloc[indices[0]].values
 
     # Display results
-    st.subheader("💘 Your Nearest Matches")
-    st.dataframe(nearest_neighbors[["predicted_match_score", "true_match_score", "distance"]])
+    st.subheader("💘 Your 5 Nearest Matches")
+    st.dataframe(nearest_neighbors)
+
+    # Feature comparison chart
+    st.subheader("🎨 Feature Comparison")
+    fig, ax = plt.subplots(figsize=(10, 4))
+    input_df_ordered.T.plot(kind="bar",
 
