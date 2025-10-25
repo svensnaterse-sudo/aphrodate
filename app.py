@@ -90,8 +90,8 @@ if st.sidebar.button("Predict Match"):
 
     # Filter training set by opposite gender
     selected_gender = input_df_ordered["gender_male"].iloc[0]
-    X_train_filtered = X_train[X_train["gender_male"] == selected_gender]
-    y_train_filtered = y_train[X_train["gender_male"] == selected_gender]
+    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
+    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
 
 
     # Nearest neighbors
