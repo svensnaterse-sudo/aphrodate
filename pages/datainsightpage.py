@@ -29,12 +29,9 @@ X_train, y_train = load_data()
 # Basic dataset info
 # ----------------------------
 st.subheader("📁 Dataset Overview")
-st.write(f"**Total profiles:** {len(X_train)}")
+st.write(f"**Total of people:** {len(X_train)}")
 st.write(f"**Total features:** {X_train.shape[1]}")
-st.write("**Match outcomes available:**", "✅ Yes" if y_train is not None else "❌ No")
 
-if st.checkbox("Show raw data"):
-    st.dataframe(X_train.head())
 
 # ----------------------------
 # Summary stats
@@ -58,28 +55,34 @@ numeric_cols = [
 ]
 
 # ----------------------------
-# Gender distribution
+# Gender & Race distribution combined
 # ----------------------------
+st.subheader("🚻🌍 Demographic Distribution")
+
+# Options to choose
+race_or_gender = []
 if gender_col:
-    st.subheader("🚻 Gender Distribution")
+    race_or_gender.append("Gender")
+if race_cols:
+    race_or_gender.append("Race")
+
+selected_demo = st.selectbox("Select feature to visualize", race_or_gender)
+
+fig, ax = plt.subplots()
+
+if selected_demo == "Gender":
     gender_counts = X_train[gender_col].value_counts().rename({1: "Male", 0: "Female"})
-    fig, ax = plt.subplots()
     gender_counts.plot(kind="bar", color=["skyblue", "lightpink"], ax=ax)
     ax.set_ylabel("Count")
     ax.set_title("Gender Distribution")
-    st.pyplot(fig)
-
-# ----------------------------
-# Race distribution
-# ----------------------------
-if race_cols:
-    st.subheader("🌍 Race Distribution")
+elif selected_demo == "Race":
     race_counts = X_train[race_cols].sum().sort_values(ascending=False)
-    fig, ax = plt.subplots()
     race_counts.plot(kind="bar", ax=ax, color="lightgreen")
     ax.set_ylabel("Count")
     ax.set_title("Race Distribution")
-    st.pyplot(fig)
+
+st.pyplot(fig)
+
 
 # ----------------------------
 # Numeric feature distributions
