@@ -74,7 +74,12 @@ if st.sidebar.button("Predict Match"):
     # Scale input
     input_scaled = scaler.transform(input_df_ordered)
 
-        # Recompute nearest neighbors using filtered training data
+    # Filter training set to only show potential matches of the opposite gender
+    selected_gender = input_df_ordered["gender_male"].iloc[0]
+    X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
+    y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
+
+    # Recompute nearest neighbors using filtered training data
     distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
 
     # Select those neighbors from the filtered dataset
@@ -95,14 +100,6 @@ if st.sidebar.button("Predict Match"):
     ax.set_title("Your Selected Feature Values")
     st.pyplot(fig)
 
-    
-
-    st.subheader("💘 Your Top 5 Predicted Matches")
-    st.dataframe(top_matches)
-
-    # Visualize the probabilities
-    st.subheader("Predicted Match Probabilities")
-    fig, ax = plt.subplots(figsize=(8, 4))
     ax.barh(top_matches.index.astype(str), top_matches["match_probability"], color="pink")
     ax.set_xlabel("Match Probability")
     ax.set_ylabel("User Index")
