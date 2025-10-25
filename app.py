@@ -99,7 +99,7 @@ if st.sidebar.button("Predict Match"):
     nearest_neighbors["distance"] = distances[0]
 
     # Display nearest neighbors
-    st.subheader(f"💘 Your {n_neighbors} Nearest Neighbors")
+    st.subheader(f"💘 Your 5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
 
     # Feature comparison chart
