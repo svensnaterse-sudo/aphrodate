@@ -66,7 +66,6 @@ input_df = user_input_features()
 
 
 # Prediction happens only when button is pressed
-# Prediction happens only when button is pressed
 if st.sidebar.button("Predict Match"):
     # Ensure correct column order
     input_df_ordered = input_df[feature_columns]
@@ -84,24 +83,26 @@ if st.sidebar.button("Predict Match"):
 
     # Select those neighbors from the filtered dataset
     nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
-    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
+    nearest_neighbors["true_match_score"] = y_train_filtered.iloc[indices[0]].values
     nearest_neighbors["distance"] = distances[0]
 
-    # Show results
+    # --- NEW: Predict "match probability" (regression output) ---
+    neighbor_scaled = scaler.transform(nearest_neighbors[feature_columns])
+    predicted_match_scores = knn_model.predict(neighbor_scaled)
+    nearest_neighbors["predicted_match_score"] = np.round(predicted_match_scores, 3)
+
+    # Display results
     st.subheader("💘 Your 5 Nearest Matches")
-    st.dataframe(nearest_neighbors)
+    st.dataframe(
+        nearest_neighbors[
+            ["predicted_match_score", "true_match_score", "distance"] +
+            [col for col in nearest_neighbors.columns if col not in ["predicted_match_score", "true_match_score", "distance"]]
+        ]
+    )
 
     # Visualization
     st.subheader("Feature Comparison")
     fig, ax = plt.subplots(figsize=(8, 4))
     input_df_ordered.T.plot(kind='bar', legend=False, ax=ax)
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Your Selected Feature Values")
-    st.pyplot(fig)
+    ax
 
-    ax.barh(top_matches.index.astype(str), top_matches["match_probability"], color="pink")
-    ax.set_xlabel("Match Probability")
-    ax.set_ylabel("User Index")
-    ax.set_title("Top 5 Most Compatible Matches")
-    st.pyplot(fig)
