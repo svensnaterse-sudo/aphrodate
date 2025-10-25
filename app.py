@@ -79,6 +79,11 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered = X_train[X_train["gender_male"] != selected_gender]
     y_train_filtered = y_train[X_train["gender_male"] != selected_gender]
 
+    distances, indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
+    nearest_neighbors = X_train_filtered.iloc[indices[0]].copy()
+    nearest_neighbors["match"] = y_train_filtered.iloc[indices[0]].values
+    nearest_neighbors["distance"] = distances[0]
+
     # Scale the filtered training set
     X_train_filtered_scaled = scaler.transform(X_train_filtered)
 
@@ -90,8 +95,7 @@ if st.sidebar.button("Predict Match"):
     results["match_probability"] = match_probs
     results["actual_match"] = y_train_filtered.values
 
-    # Sort by highest predicted probability
-    top_matches = results.sort_values(by="match_probability", ascending=False).head(5)
+    
 
     st.subheader("💘 Your Top 5 Predicted Matches")
     st.dataframe(top_matches)
