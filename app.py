@@ -87,12 +87,4 @@ if st.sidebar.button("Predict Match"):
     st.subheader("💘 Your 5 Nearest Neighbors")
     st.dataframe(nearest_neighbors)
 
-    # Feature comparison chart for the input
-    st.subheader("🎨 Feature Values")
-    fig, ax = plt.subplots(figsize=(10, 4))
-    input_df_ordered.T.plot(kind="bar", legend=False, ax=ax, color="lightcoral", width=0.7)
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Your Selected Feature Values")
-    st.pyplot(fig)
 
