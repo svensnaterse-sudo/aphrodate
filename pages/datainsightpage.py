@@ -40,7 +40,7 @@ def user_input_features():
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
-    # Race (one-hot encoding)
+    # Race 
     race_cols = [col for col in feature_cols if col.startswith("race_")]
     race_options = [col.replace("race_", "") for col in race_cols]
     selected_race = st.sidebar.selectbox("Desired race", race_options)
@@ -51,7 +51,7 @@ def user_input_features():
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
     # Other numeric features (0-10)
-    numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
+    numeric_features = [col for col in feature_cols if col not in ["age","gender_male", "race_"]]
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
