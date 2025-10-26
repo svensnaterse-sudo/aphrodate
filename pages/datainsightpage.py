@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from joblib import load
 
-# ----------------------------
-# Page Config
-# ----------------------------
+
 st.set_page_config(page_title="Profile Insights", page_icon="📊")
 
 st.title("📊 Profile Insights")
@@ -49,7 +47,6 @@ def user_input_features():
 
     # Other numeric features (0-10)
     
-
     for col in numeric_features:
         show_trait = st.sidebar.checkbox(col, value=True, help="Exclude from the query")
         if show_trait:
