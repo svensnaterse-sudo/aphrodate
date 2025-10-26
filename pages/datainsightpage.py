@@ -80,8 +80,6 @@ if st.button("Show query"):
         trait_value = input_df[col].iloc[0]  # get slider value
         if trait_value is not None:  # if checkbox is checked
             count = (X_train[col] >= trait_value).sum()
-        else:
-            count = None  # checkbox was unchecked
         trait_counts[col] = count
     st.dataframe(pd.DataFrame.from_dict(trait_counts, orient="index", columns=["Count"]))
     
