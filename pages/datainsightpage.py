@@ -43,6 +43,20 @@ def user_input_features():
 
 input_df = user_input_features()
 
+st.subheader("SQL-Based Data Querying")
+st.markdown("""
+Here you can write SQL queries to explore the Aphrodate dataset.
+""")
+
+sql_query = st.text_area("Enter your SQL query here", value ="SELECT * FROM X_train LIMIT 5")
+if st.button("Run SQL Query"):
+    try:
+        query_result = ps.sqldf(sql_query, locals())
+        st.write("Query returned {len(query_result)} rows.")
+        st.dataframe(query_result)
+    except Exception as e:
+        st.error("Error in query: {e}")
+
 st.subheader("Summary Statistics")
 st.dataframe(X_train.describe().T)
 
@@ -68,7 +82,7 @@ if st.button("Show query"):
             combined_count &= (X_train[col] >= trait_value)
     st.subheader("Amount of distinct traits")        
     st.dataframe(pd.DataFrame.from_dict(trait_counts, orient="index", columns=["Count"]))
-    st.subheader("People where all selected values hold")
+    st.subheader("Amount of people where all selected values hold")
     st.write(combined_count.sum())
     
 # Gender & Race distribution combined
