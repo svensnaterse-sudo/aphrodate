@@ -45,6 +45,7 @@ numeric_cols = [
 
 st.subheader("Explore feature distributions using the sliders on your left")
 if st.sidebar.button("Show query")
+    st.subheader("test")
 
 # Gender & Race distribution combined
 st.subheader("🚻🌍 Showcase statistics from either race or gender")
