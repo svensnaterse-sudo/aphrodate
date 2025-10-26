@@ -48,7 +48,11 @@ def user_input_features():
         inputs[f"race_{race}"] = 1 if race == selected_race else 0
 
     # Age
-    inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
+    st.sidebar.markdown("### Age")
+    age_col1, age_col2 = st.sidebar.columns([4, 1])
+    disable_age = age_col2.checkbox("❌", key="disable_age", help="Exclude age from query")
+    if not disable_age:
+        inputs["age"] = age_col1.slider("Desired age", 18, 50, 25, key="age_slider")
 
     # Other numeric features (0-10)
     numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
