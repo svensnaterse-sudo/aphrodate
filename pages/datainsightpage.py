@@ -31,7 +31,7 @@ st.write(f"**Total features:** {X_train.shape[1]}")
 st.sidebar.header("Explore feature distributions")
 
 feature_cols = X_train.columns.tolist()
-
+numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
 def user_input_features():
     inputs = {}
 
@@ -49,7 +49,7 @@ def user_input_features():
 
     # Other numeric features (0-10)
     
-    numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
+
     for col in numeric_features:
         show_trait = st.sidebar.checkbox(col, value=True, help="Exclude from the query")
         if show_trait:
