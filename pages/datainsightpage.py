@@ -79,9 +79,13 @@ numeric_cols = [
 st.subheader("Explore feature distributions using the sliders")
 if st.button("Show query"):
     trait_counts= {}
-    for col in numeric_features:
-        count=(X_train[col]>=5).sum()
-        trait_counts[col] = count
+    trait_value = input_df[col].iloc[0]
+    if trait_value is not None:
+        for col in numeric_features:
+            count=(X_train[col]>=5).sum()
+    else:
+        count = None
+    trait_counts[col] = count
     st.dataframe(pd.DataFrame.from_dict(trait_counts, orient="index", columns=["Count"]))
 # Gender & Race distribution combined
 st.subheader("🚻🌍 Showcase statistics from either race or gender")
