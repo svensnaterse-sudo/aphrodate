@@ -5,18 +5,14 @@ import numpy as np
 from joblib import load
 import matplotlib.pyplot as plt
 
-# ----------------------------
 # Page config
-# ----------------------------
 st.set_page_config(page_title="Aphrodate", page_icon="💘")
 st.title("💘 Aphrodate")
 st.markdown(
     "Adjust the sliders in the sidebar to set input features, then see your nearest matches."
 )
 
-# ----------------------------
 # Load model, scaler, and training data
-# ----------------------------
 @st.cache_resource
 def load_model_and_data():
     knn_model = load("knn_model.joblib")
@@ -27,14 +23,10 @@ def load_model_and_data():
 
 knn_model, scaler, X_train, y_train = load_model_and_data()
 
-# ----------------------------
 # Define features (same order as training)
-# ----------------------------
 feature_columns = X_train.columns.tolist()
 
-# ----------------------------
 # Sidebar: user inputs
-# ----------------------------
 st.sidebar.header("Set Input Features")
 
 def user_input_features():
@@ -65,9 +57,7 @@ def user_input_features():
 
 input_df = user_input_features()
 
-# ----------------------------
 # Prediction button
-# ----------------------------
 if st.sidebar.button("Predict Match"):
     # Match input columns
     input_df_ordered = input_df[feature_columns]
@@ -103,13 +93,3 @@ if st.sidebar.button("Predict Match"):
     # Display nearest neighbors
     st.subheader("💘 Your 5 best matches")
     st.dataframe(nearest_neighbors)
-
-
-    # Feature comparison chart
-    st.subheader("🎨 Feature Values")
-    fig, ax = plt.subplots(figsize=(8,4))
-    input_df_ordered.T.plot(kind='bar', legend=False, ax=ax, color='lightcoral')
-    ax.set_ylabel("Value")
-    ax.set_xlabel("Feature")
-    ax.set_title("Selected Feature Values")
-    st.pyplot(fig)
