@@ -80,8 +80,12 @@ if st.button("Show query"):
         trait_value = input_df[col].iloc[0]  # get slider value
         if trait_value is not None:  # only include checked features
             count = (X_train[col] >= trait_value).sum()
-            trait_counts[col] = count  
+            trait_counts[col] = count 
+            combined_count &= (X_train[col] >= trait_value)
+    st.subheader("Amount of distinct traits")        
     st.dataframe(pd.DataFrame.from_dict(trait_counts, orient="index", columns=["Count"]))
+    st.subheader("People where all selected values hold")
+    st.write(combined_count.sum())
     
 # Gender & Race distribution combined
 st.subheader("🚻🌍 Showcase statistics from either race or gender")
