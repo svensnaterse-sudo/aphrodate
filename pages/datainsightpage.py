@@ -51,7 +51,7 @@ def user_input_features():
     with st.sidebar:
         col1, col2 = st.columns([4,1])
         with col1:
-            show_age = st.checkbox(value=True, help="Exlude from the query")
+            show_age = st.checkbox("Age", value=True, help="Exlude from the query")
         with col2: 
             if show_age:
                 age = st.slider("Desired age", 18, 50, 25, key="age_slider")
