@@ -81,14 +81,12 @@ if st.sidebar.button("Predict Match"):
     # Scale filtered training data
     X_train_scaled = scaler.transform(X_train_filtered)
     
-    # Compute distances manually to avoid re-fitting model
-    distances = pairwise_distances(input_scaled, X_train_scaled)
-    nearest_indices = np.argsort(distances[0])[:5]
+    distances, nearest_indices = knn_model.kneighbors(input_scaled, n_neighbors=5)
     
     # Get nearest matches
-    nearest_neighbors = X_train_filtered.iloc[nearest_indices].copy()
-    nearest_neighbors["match"] = y_train_filtered.iloc[nearest_indices].values
-    nearest_neighbors["distance"] = distances[0][nearest_indices]
+    nearest_neighbors = X_train_filtered.iloc[nearest_indices[0]].copy()
+    nearest_neighbors["match"] = y_train_filtered.iloc[nearest_indices[0]].values
+    nearest_neighbors["distance"] = distances[0]
 
     # Display nearest neighbors
     st.subheader("💘 Your 5 best matches")
