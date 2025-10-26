@@ -43,7 +43,7 @@ numeric_cols = [
     if c not in race_cols and c != gender_col and X_train[c].dtype in [float, int]
 ]
 
-st.subheader("Explore feature distributions using the sliders on your left")
+st.subheader("Explore feature distributions using the sliders")
 if st.sidebar.button("Show query"):
     st.subheader("test")
 
