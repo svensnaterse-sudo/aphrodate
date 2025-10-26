@@ -75,12 +75,12 @@ numeric_cols = [
 
 st.subheader("Explore feature distributions using the sliders")
 if st.button("Show query"):
-    trait_counts= {}
+    trait_counts = {}
     for col in numeric_features:
         trait_value = input_df[col].iloc[0]  # get slider value
-        if trait_value is not None:  # if checkbox is checked
+        if trait_value is not None:  # only include checked features
             count = (X_train[col] >= trait_value).sum()
-        trait_counts[col] = count
+            trait_counts[col] = count  
     st.dataframe(pd.DataFrame.from_dict(trait_counts, orient="index", columns=["Count"]))
     
 # Gender & Race distribution combined
