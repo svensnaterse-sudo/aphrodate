@@ -44,7 +44,7 @@ numeric_cols = [
 ]
 
 st.subheader("Explore feature distributions using the sliders")
-if st.sidebar.button("Show query"):
+if st.button("Show query"):
     st.subheader("test")
 
 # Gender & Race distribution combined
