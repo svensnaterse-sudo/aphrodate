@@ -59,9 +59,19 @@ def user_input_features():
                 age = None
 
     # Other numeric features (0-10)
+    
     numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
     for col in numeric_features:
-        inputs[col] = st.sidebar.slider(col, 0, 10, 5)
+        with st.sidebar:
+            col1, col2 = st.columns([1,2])
+            with col1:
+                show_trait = st.checkbox(col, value=True, help="Exclude from the query")
+            with col2:
+                if show_trait:
+                    inputs[col] = st.sidebar.slider(col, 0, 10, 5)    
+                else:
+                    inputs[col] = None
+
 
 
     return pd.DataFrame([inputs])
