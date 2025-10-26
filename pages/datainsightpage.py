@@ -32,29 +32,12 @@ feature_cols = X_train.columns.tolist()
 numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
 def user_input_features():
     inputs = {}
-    # Gender
-    inputs["gender_male"] = st.sidebar.selectbox(
-        "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
-    )
-    # Age
-    with st.sidebar:
-        show_age = st.checkbox("Age", value=True, help="Exlude from the query")
-        if show_age:
-            age = st.slider("", 18, 50, 25, key="age_slider")
-        else:
-            age = None
-
-    # Other numeric features (0-10)
-    
     for col in numeric_features:
         show_trait = st.sidebar.checkbox(col, value=True, help="Exclude from the query")
         if show_trait:
             inputs[col] = st.sidebar.slider(col, 0, 10, 5)
         else:
             inputs[col] = None
-    
-
-
     return pd.DataFrame([inputs])
 
 input_df = user_input_features()
