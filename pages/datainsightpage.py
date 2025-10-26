@@ -28,6 +28,35 @@ st.write(f"**Total of people:** {len(X_train)}")
 st.write(f"**Total features:** {X_train.shape[1]}")
 
 
+st.sidebar.header("Explore feature distributions")
+
+def user_input_features():
+    inputs = {}
+
+    # Gender
+    inputs["gender_male"] = st.sidebar.selectbox(
+        "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
+    )
+
+    # Race (one-hot encoding)
+    race_cols = [col for col in feature_columns if col.startswith("race_")]
+    race_options = [col.replace("race_", "") for col in race_cols]
+    selected_race = st.sidebar.selectbox("Desired race", race_options)
+    for race in race_options:
+        inputs[f"race_{race}"] = 1 if race == selected_race else 0
+
+    # Age
+    inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
+
+    # Other numeric features (0-10)
+    numeric_features = [col for col in feature_columns if col not in ["age","gender_male"] and "race_" not in col]
+    for col in numeric_features:
+        inputs[col] = st.sidebar.slider(col, 0, 10, 5)
+
+
+    return pd.DataFrame([inputs])
+
+input_df = user_input_features()
 
 st.subheader("📈 Summary Statistics")
 st.dataframe(X_train.describe().T)
@@ -43,7 +72,7 @@ numeric_cols = [
     if c not in race_cols and c != gender_col and X_train[c].dtype in [float, int]
 ]
 
-st.sidebar.header("Explore feature distributions")
+
 
 st.subheader("Explore feature distributions using the sliders")
 if st.button("Show query"):
