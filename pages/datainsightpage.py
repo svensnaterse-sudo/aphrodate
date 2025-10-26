@@ -32,7 +32,6 @@ feature_cols = X_train.columns.tolist()
 numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
 def user_input_features():
     inputs = {}
-
     # Gender
     inputs["gender_male"] = st.sidebar.selectbox(
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
@@ -76,6 +75,7 @@ numeric_cols = [
 st.subheader("Explore feature distributions using the sliders")
 if st.button("Show query"):
     trait_counts = {}
+    combined_count = pd.Series(True, index=X_train.index)
     for col in numeric_features:
         trait_value = input_df[col].iloc[0]  # get slider value
         if trait_value is not None:  # only include checked features
