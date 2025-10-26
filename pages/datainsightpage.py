@@ -39,14 +39,6 @@ def user_input_features():
     inputs["gender_male"] = st.sidebar.selectbox(
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
-
-    # Race 
-    race_cols = [col for col in feature_cols if col.startswith("race_")]
-    race_options = [col.replace("race_", "") for col in race_cols]
-    selected_race = st.sidebar.selectbox("Desired race", race_options)
-    for race in race_options:
-        inputs[f"race_{race}"] = 1 if race == selected_race else 0
-
     # Age
     with st.sidebar:
         show_age = st.checkbox("Age", value=True, help="Exlude from the query")
@@ -86,8 +78,11 @@ numeric_cols = [
 
 st.subheader("Explore feature distributions using the sliders")
 if st.button("Show query"):
-    st.subheader("test")
-
+    trait_counts= {}
+    for col in numeric_features:
+        count=(X_train[col]>=5).sum()
+        trait_counts[col] = count
+    st.dataframe(pd.DataFrame.from_dict(trait_counts, orient="index", columns=["Count"]))
 # Gender & Race distribution combined
 st.subheader("🚻🌍 Showcase statistics from either race or gender")
 
