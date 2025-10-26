@@ -3,11 +3,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from joblib import load
+import pandasql as ps
 
 
 st.set_page_config(page_title="Profile Insights", page_icon="📊")
 
-st.title("📊 Profile Insights")
+st.title("Profile Insights")
 st.markdown("""
 Explore general patterns and trends in the Aphrodate dataset.
 """)
@@ -42,7 +43,7 @@ def user_input_features():
 
 input_df = user_input_features()
 
-st.subheader("📈 Summary Statistics")
+st.subheader("Summary Statistics")
 st.dataframe(X_train.describe().T)
 
 
@@ -71,7 +72,7 @@ if st.button("Show query"):
     st.write(combined_count.sum())
     
 # Gender & Race distribution combined
-st.subheader("🚻🌍 Showcase statistics from either race or gender")
+st.subheader("Showcase statistics from either race or gender")
 
 # Options to choose
 race_or_gender = []
@@ -99,7 +100,7 @@ elif selected_demo == "Race":
 st.pyplot(fig)
 
 # Numeric feature distributions
-st.subheader("📊 Trait Distributions")
+st.subheader("Trait Distributions")
 selected_trait = st.selectbox("Select a trait to visualize", numeric_cols)
 
 fig, ax = plt.subplots()
