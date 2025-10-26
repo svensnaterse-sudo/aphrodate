@@ -14,9 +14,7 @@ st.markdown("""
 Explore general patterns and trends in the Aphrodate dataset.
 """)
 
-# ----------------------------
 # Load model & data
-# ----------------------------
 @st.cache_resource
 def load_data():
     X_train = load("X_train.joblib")
@@ -35,11 +33,9 @@ st.subheader("📈 Summary Statistics")
 st.dataframe(X_train.describe().T)
 
 
-st.sidebar.header("🔍 Explore Feature Distributions")
 
 feature_cols = X_train.columns.tolist()
 
-# Identify common feature types
 gender_col = "gender_male" if "gender_male" in X_train.columns else None
 race_cols = [c for c in X_train.columns if c.startswith("race_")]
 numeric_cols = [
@@ -47,9 +43,10 @@ numeric_cols = [
     if c not in race_cols and c != gender_col and X_train[c].dtype in [float, int]
 ]
 
-# ----------------------------
+st.subheader("Explore feature distributions using the sliders on your left")
+if st.sidebar.button("Show query")
+
 # Gender & Race distribution combined
-# ----------------------------
 st.subheader("🚻🌍 Showcase statistics from either race or gender")
 
 # Options to choose
@@ -77,10 +74,7 @@ elif selected_demo == "Race":
 
 st.pyplot(fig)
 
-
-# ----------------------------
 # Numeric feature distributions
-# ----------------------------
 st.subheader("📊 Trait Distributions")
 selected_trait = st.selectbox("Select a trait to visualize", numeric_cols)
 
