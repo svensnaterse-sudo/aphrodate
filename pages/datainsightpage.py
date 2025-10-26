@@ -49,7 +49,7 @@ def user_input_features():
 
     # Age
     with st.sidebar:
-        col1, col2 = st.columns([1,2])
+        col1, col2 = st.columns([1,1])
         with col1:
             show_age = st.checkbox("Age", value=True, help="Exlude from the query")
         with col2: 
