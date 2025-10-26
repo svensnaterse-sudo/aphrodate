@@ -52,7 +52,7 @@ sql_query = st.text_area("Enter your SQL query here", value ="SELECT * FROM X_tr
 if st.button("Run SQL Query"):
     try:
         query_result = ps.sqldf(sql_query, locals())
-        st.write("Query returned {len(query_result)} rows.")
+        st.write("Query returned " + len(query_result) + " rows.")
         st.dataframe(query_result)
     except Exception as e:
         st.error("Error in query: {e}")
