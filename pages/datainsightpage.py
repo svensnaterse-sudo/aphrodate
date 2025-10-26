@@ -51,12 +51,12 @@ def user_input_features():
     with st.sidebar:
         col1, col2 = st.columns([4,1])
         with col1:
-            if show_age:
-                age = st.slider("Desired age", 18, 50, 25, key="age_slider")
-            else:
-                age = None
-        with col2: 
             show_age = st.checkbox(value=True, help="Exlude from the query")
+        with col2: 
+             if show_age:
+                    age = st.slider("Desired age", 18, 50, 25, key="age_slider")
+                else:
+                    age = None
 
     # Other numeric features (0-10)
     numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
