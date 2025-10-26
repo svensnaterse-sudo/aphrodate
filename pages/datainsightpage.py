@@ -30,6 +30,8 @@ st.write(f"**Total features:** {X_train.shape[1]}")
 
 st.sidebar.header("Explore feature distributions")
 
+feature_cols = X_train.columns.tolist()
+
 def user_input_features():
     inputs = {}
 
@@ -39,7 +41,7 @@ def user_input_features():
     )
 
     # Race (one-hot encoding)
-    race_cols = [col for col in feature_columns if col.startswith("race_")]
+    race_cols = [col for col in feature_cols if col.startswith("race_")]
     race_options = [col.replace("race_", "") for col in race_cols]
     selected_race = st.sidebar.selectbox("Desired race", race_options)
     for race in race_options:
@@ -61,9 +63,6 @@ input_df = user_input_features()
 st.subheader("📈 Summary Statistics")
 st.dataframe(X_train.describe().T)
 
-
-
-feature_cols = X_train.columns.tolist()
 
 gender_col = "gender_male" if "gender_male" in X_train.columns else None
 race_cols = [c for c in X_train.columns if c.startswith("race_")]
