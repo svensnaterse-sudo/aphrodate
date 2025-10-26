@@ -51,7 +51,7 @@ def user_input_features():
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
     # Other numeric features (0-10)
-    numeric_features = [col for col in feature_cols if col not in ["age","gender_male", "race_"]]
+    numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and 'race_" not in col]
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
