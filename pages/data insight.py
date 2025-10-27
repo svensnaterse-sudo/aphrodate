@@ -27,7 +27,7 @@ st.write(f"**Total of people:** {len(X_train)}")
 st.write(f"**Total features:** {X_train.shape[1]}")
 
 
-st.sidebar.header("Explore feature distributions using the " "show query" " button")
+st.sidebar.header("Explore feature distributions using the 'show query' button")
 
 feature_cols = X_train.columns.tolist()
 numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
