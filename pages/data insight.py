@@ -23,7 +23,6 @@ def load_data():
 X_train, y_train = load_data()
 race_cols = [c for c in X_train.columns if c.startswith("race_")]
 gender_col = "gender_male" if "gender_male" in X_train.columns else None
-numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
 
 
 st.write(f"**Total of people:** {len(X_train)}")
