@@ -79,7 +79,7 @@ if st.sidebar.button("Predict Match"):
     X_train_scaled = scaler.transform(X_train_filtered)
 
     # Compute distances manually to avoid re-fitting model
-    distances = pairwise_distances(input_scaled, X_train_scaled)
+    distances = pairwise_distances(input_scaled, X_train_scaled)[0]
     
     # Make sure we don't request more neighbors than available
     num_neighbors = min(5, X_train_filtered.shape[0])
@@ -88,17 +88,18 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered = X_train_filtered.copy()
     X_train_filtered["distance"] = distances
     X_train_filtered["match"] = y_train_filtered.values
-
+    
+    # ✅ Remove duplicates (everything except match/distance)
     feature_only_cols = [c for c in X_train_filtered.columns if c not in ["match", "distance"]]
     X_train_filtered = (
-        X_train_filtered.sort_values("distance").drop_duplicates(subset=feature_only_cols, keep="first")
+        X_train_filtered.sort_values("distance")
+        .drop_duplicates(subset=feature_only_cols, keep="first")
     )
+    
+    # ✅ Get top 5 unique matches
+    num_neighbors = min(5, X_train_filtered.shape[0])
+    nearest_neighbors = X_train_filtered.nsmallest(num_neighbors, "distance").copy()
 
-
-    # Get nearest matches
-    nearest_neighbors = X_train_filtered.iloc[nearest_indices].copy()
-    nearest_neighbors["match"] = y_train_filtered.iloc[nearest_indices].values
-    nearest_neighbors["distance"] = distances[0][nearest_indices]
 
     # Display nearest neighbors
     st.subheader(f"💘 Your {num_neighbors} best matches")
