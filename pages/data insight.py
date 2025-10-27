@@ -28,13 +28,14 @@ st.write(f"**Total features:** {X_train.shape[1]}")
 
 
 st.sidebar.header("Explore feature distributions using the 'show query' button")
-
+# make sliders for (almost) all numeric features
 feature_cols = X_train.columns.tolist()
 numeric_features = [col for col in feature_cols if col not in ["age","gender_male"] and "race_" not in col]
 def user_input_features():
     inputs = {}
     for col in numeric_features:
         show_trait = st.sidebar.checkbox(col, value=True, help="Exclude from the query")
+        #disable sliders if checkbox is marked
         if show_trait:
             inputs[col] = st.sidebar.slider(col, 0, 10, 5)
         else:
@@ -47,7 +48,7 @@ st.subheader("SQL-Based Data Querying")
 st.markdown("""
 Here you can write SQL queries to explore the Aphrodate dataset.
 """)
-
+# run the query
 sql_query = st.text_area("Enter your SQL query here", value ="SELECT * FROM X_train LIMIT 5")
 if st.button("Run SQL Query"):
     try:
@@ -57,17 +58,9 @@ if st.button("Run SQL Query"):
     except Exception as e:
         st.error("Error in query: {e}")
 
+#show summary of data
 st.subheader("Summary Statistics")
 st.dataframe(X_train.describe().T)
-
-
-gender_col = "gender_male" if "gender_male" in X_train.columns else None
-race_cols = [c for c in X_train.columns if c.startswith("race_")]
-numeric_cols = [
-    c for c in feature_cols
-    if c not in race_cols and c != gender_col and X_train[c].dtype in [float, int]
-]
-
 
 
 st.subheader("Explore feature distributions using the sliders")
