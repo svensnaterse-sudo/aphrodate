@@ -110,7 +110,7 @@ st.pyplot(fig)
 
 # Numeric feature distributions
 st.subheader("Trait Distributions")
-selected_trait = st.selectbox("Select a trait to visualize", numeric_cols)
+selected_trait = st.selectbox("Select a trait to visualize", numeric_features)
 
 fig, ax = plt.subplots()
 sns.histplot(X_train[selected_trait], color="blue", ax=ax)
