@@ -85,6 +85,16 @@ if st.sidebar.button("Predict Match"):
     num_neighbors = min(5, X_train_filtered.shape[0])
     nearest_indices = np.argsort(distances[0])[:num_neighbors]
 
+    X_train_filtered = X_train_filtered.copy()
+    X_train_filtered["distance"] = distances
+    X_train_filtered["match"] = y_train_filtered.values
+
+    feature_only_cols = [c for c in X_train_filtered.columns if c not in ["match", "distance"]]
+    X_train_filtered = (
+        X_train_filtered.sort_values("distance").drop_duplicates(subset=feature_only_cols, keep="first")
+    )
+
+
     # Get nearest matches
     nearest_neighbors = X_train_filtered.iloc[nearest_indices].copy()
     nearest_neighbors["match"] = y_train_filtered.iloc[nearest_indices].values
