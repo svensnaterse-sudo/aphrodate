@@ -103,7 +103,7 @@ if st.sidebar.button("Predict Match"):
 
     # Add Match Status based on standards threshold
     nearest_neighbors["Match Status"] = nearest_neighbors["distance"].apply(
-        lambda d: "❤️ Match" if d < (10 - standards_value *0.6) else "💔 Not a match"
+        lambda d: "❤️ Match" if d < (10 - standards_value *0.5) else "💔 Not a match"
     )
 
     # Drop the original match column from display
