@@ -24,7 +24,7 @@ def load_model_and_data():
 
 knn_model, scaler, X_train, y_train = load_model_and_data()
 
-# Define features (same order as training)
+# Define features
 feature_columns = X_train.columns.tolist()
 
 # Sidebar: user inputs
@@ -38,7 +38,7 @@ def user_input_features():
         "Gender", options=[0, 1], format_func=lambda x: "Male" if x == 1 else "Female"
     )
 
-    # Race (one-hot encoding)
+    # Race
     race_cols = [col for col in feature_columns if col.startswith("race_")]
     race_options = [col.replace("race_", "") for col in race_cols]
     selected_race = st.sidebar.selectbox("Desired race", race_options)
@@ -48,7 +48,7 @@ def user_input_features():
     # Age
     inputs["age"] = st.sidebar.slider("Desired age", 18, 50, 25)
 
-    # Other numeric features (0-10)
+    # Other features 
     numeric_features = [col for col in feature_columns if col not in ["age","gender_male"] and "race_" not in col]
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
@@ -80,7 +80,7 @@ if st.sidebar.button("Predict Match"):
     # Scale filtered training data
     X_train_scaled = scaler.transform(X_train_filtered)
 
-    # Compute distances manually to avoid re-fitting model
+
     distances = pairwise_distances(input_scaled, X_train_scaled)[0]
 
     # Attach distances and match info
@@ -88,20 +88,18 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered["distance"] = distances
     X_train_filtered["match"] = y_train_filtered.values
 
-    # Remove duplicate feature rows (keep closest)
+    # Remove duplicate feature rows 
     feature_only_cols = [c for c in X_train_filtered.columns if c not in ["match", "distance"]]
-    X_train_filtered = X_train_filtered.sort_values("distance").drop_duplicates(
-        subset=feature_only_cols, keep="first"
-    )
+    X_train_filtered = X_train_filtered.sort_values("distance").drop_duplicates(subset=feature_only_cols, keep="first")
 
-    # Determine number of neighbors to show
+    # Determine neighbors to show
     num_neighbors = min(5, X_train_filtered.shape[0])
     nearest_neighbors = X_train_filtered.nsmallest(num_neighbors, "distance").copy()
 
     # Get the user's standards slider value
     standards_value = input_df["standards"].iloc[0]
 
-    # Add Match Status based on standards threshold
+    # Add Match Status based on standards 
     nearest_neighbors["Match Status"] = nearest_neighbors["distance"].apply(
         lambda d: "❤️ Match" if d < (10 - standards_value *0.5) else "💔 Not a match"
     )
