@@ -74,6 +74,7 @@ if st.sidebar.button("Predict Match"):
     else:
         X_train_filtered = X_train
         y_train_filtered = y_train
+    
 
     # Scale filtered training data
     X_train_scaled = scaler.transform(X_train_filtered)
