@@ -53,6 +53,8 @@ def user_input_features():
     for col in numeric_features:
         inputs[col] = st.sidebar.slider(col, 0, 10, 5)
 
+    inputs["standards"] = st.sidebar.slider("How high are your standards?", 0, 10, 6)
+
     return pd.DataFrame([inputs])
 
 input_df = user_input_features()
@@ -94,11 +96,11 @@ if st.sidebar.button("Predict Match"):
     X_train_filtered = (
         X_train_filtered.sort_values("distance").drop_duplicates(subset=feature_only_cols, keep="first")
     )
-    
+    standards_value = input_df["standards"].iloc[0]
     num_neighbors = min(5, X_train_filtered.shape[0])
     nearest_neighbors = X_train_filtered.nsmallest(num_neighbors, "distance").copy()
     nearest_neighbors["Match Status"] = nearest_neighbors["distance"].apply(
-    lambda d: "❤️ Match" if d < 6 else "💔 Not a match"
+    lambda d: "❤️ Match" if d < nearest_neighbors else "💔 Not a match"
     )
     final_nearest_neighbors = nearest_neighbors.drop(columns=["match"])
 
