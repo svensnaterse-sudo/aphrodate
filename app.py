@@ -99,6 +99,9 @@ if st.sidebar.button("Predict Match"):
     nearest_neighbors = X_train_filtered.nsmallest(num_neighbors, "distance").copy()
     final_nearest_neighbors = nearest_neighbors.drop(columns=["match"])
 
+    nearest_neighbors["Match Status"] = nearest_neighbors["match"].apply(lambda x: "❤️ Match" if x == 1 else "💔 Not a match")
+    final_nearest_neighbors = nearest_neighbors.drop(columns=["match"])
+
 
     # Display nearest neighbors
     st.subheader(f"💘 Your {num_neighbors} best matches")
