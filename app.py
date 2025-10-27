@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import pairwise_distances
 
 # Page config
-st.set_page_config(page_title="Aphrodate", page_icon="💘")
-st.title("💘 Aphrodate")
+st.set_page_config(page_title="Aphrodate", page_icon="💕")
+st.title("❤️ Aphrodate")
 st.markdown(
     "Adjust the sliders in the sidebar to set input features, then see your nearest matches."
 )
