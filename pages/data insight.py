@@ -21,7 +21,8 @@ def load_data():
     return X_train, y_train
 
 X_train, y_train = load_data()
-
+race_cols = [c for c in X_train.columns if c.startswith("race_")]
+gender_col = "gender_male" if "gender_male" in X_train.columns else None
 
 st.write(f"**Total of people:** {len(X_train)}")
 st.write(f"**Total features:** {X_train.shape[1]}")
